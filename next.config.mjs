@@ -5,13 +5,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "logo.clearbit.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+      }
     ],
-  },
-  typescript: {
-    // Ensure production build passes even if minor type mismatches occur in legacy files
-    ignoreBuildErrors: false,
   },
 };
 

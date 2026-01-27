@@ -6,12 +6,13 @@ import { scholarships } from '../data/scholarships';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.afterinter.com';
 
-  const staticPages = [
+  const staticRoutes = [
     '',
     '/universities',
     '/exams',
     '/scholarships',
     '/tools',
+    '/exam-finder',
     '/about',
     '/contact',
     '/privacy-policy',
@@ -20,30 +21,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: route === '' ? 1 : 0.8,
+    changeFrequency: 'weekly' as const,
+    priority: route === '' ? 1.0 : 0.8,
   }));
 
-  const universityUrls = universities.map((uni) => ({
+  const universityRoutes = universities.map((uni) => ({
     url: `${baseUrl}/universities/${uni.id}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
 
-  const examUrls = exams.map((exam) => ({
+  const examRoutes = exams.map((exam) => ({
     url: `${baseUrl}/exams/${exam.id}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'daily' as const, // Exams change status frequently
     priority: 0.9,
   }));
 
-  const scholarshipUrls = scholarships.map((scholar) => ({
-    url: `${baseUrl}/scholarships/${scholar.id}`,
+  const scholarshipRoutes = scholarships.map((s) => ({
+    url: `${baseUrl}/scholarships/${s.id}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
 
-  return [...staticPages, ...universityUrls, ...examUrls, ...scholarshipUrls];
+  return [...staticRoutes, ...universityRoutes, ...examRoutes, ...scholarshipRoutes];
 }

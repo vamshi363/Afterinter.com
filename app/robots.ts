@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/login', '/saved'],
+      disallow: ['/login', '/saved', '/api/'],
     },
     sitemap: 'https://www.afterinter.com/sitemap.xml',
   };

@@ -1,15 +1,19 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { universities } from '../../../data/universities';
 import { 
   MapPin, CheckCircle2, BookOpen, IndianRupee, 
   Building2, ExternalLink, ArrowLeft, Heart, ShieldCheck, Star, Navigation, Globe
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// Note: In a real server component, generateMetadata would be exported here.
+// Since this file was marked 'use client' in the previous context, we will add
+// structured data (JSON-LD) dynamically inside the component.
 
 export default function UniversityDetailsPage() {
   const params = useParams();
@@ -54,8 +58,37 @@ export default function UniversityDetailsPage() {
 
   if (!uni) return <div className="p-20 text-center font-bold text-xl">University not found</div>;
 
+  // JSON-LD for CollegeOrUniversity
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollegeOrUniversity",
+    "name": uni.name,
+    "url": `https://www.afterinter.com/universities/${uni.id}`,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": uni.city,
+      "addressRegion": uni.state,
+      "streetAddress": uni.address
+    },
+    "description": uni.description,
+    "telephone": uni.phone,
+    "email": uni.email,
+    "hasCredential": {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "degree",
+      "educationalLevel": "Undergraduate"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <title>{`${uni.name} | Fees, Placements, Cutoffs 2025`}</title>
+      <meta name="description" content={`Admission details for ${uni.name}, ${uni.city}. Check ${uni.courses[0]?.eligibility} cutoffs, hostel fees, and placement records.`} />
+      
       <AnimatePresence>
         {showToast && (
           <motion.div 
@@ -82,8 +115,18 @@ export default function UniversityDetailsPage() {
            </div>
            
            <div className="flex flex-col md:flex-row gap-8 items-start">
-             <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-slate-100 dark:border-slate-700 flex items-center justify-center text-3xl font-black text-slate-300">
-               {uni.name.charAt(0)}
+             <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-3xl shadow-md border border-slate-100 dark:border-slate-700 flex items-center justify-center text-3xl font-black text-slate-300 relative overflow-hidden">
+                <Image 
+                  src={`https://logo.clearbit.com/${new URL(uni.website).hostname}`} 
+                  alt={`${uni.name} Logo`}
+                  width={96}
+                  height={96}
+                  className="object-contain p-2"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
              </div>
              <div className="flex-1">
                <div className="flex flex-wrap gap-2 mb-4">

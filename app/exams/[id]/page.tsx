@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -58,8 +57,33 @@ export default function ExamDetailsPage() {
 
   if (!id || !exam) return <div className="p-20 text-center font-bold text-xl">Exam not found</div>;
 
+  // JSON-LD for Exam
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Exam",
+    "name": exam.name,
+    "description": exam.description,
+    "startDate": exam.date, // Approximate ISO
+    "endDate": exam.date,
+    "location": {
+        "@type": "Place",
+        "name": "Multiple Centers in TS/AP"
+    },
+    "provider": {
+        "@type": "Organization",
+        "name": "State Council"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-32 selection:bg-primary-teal/20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <title>{`${exam.name} 2025 | Date, Syllabus, Application`}</title>
+      <meta name="description" content={`Complete guide for ${exam.name} 2025. Check application deadline, exam date, fee (${exam.feeRange}), and syllabus.`} />
+
       <AnimatePresence>
         {showToast && (
           <motion.div 
@@ -220,81 +244,6 @@ export default function ExamDetailsPage() {
                      </div>
                   </div>
                </div>
-            </div>
-         </section>
-
-         <section className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-               <div className="flex items-center gap-2">
-                  <Zap className="text-primary-teal" size={20} />
-                  <h2 className="text-lg font-black text-slate-900 dark:text-white">Preparation Toolkit</h2>
-               </div>
-               <span className="text-[10px] font-bold uppercase tracking-widest bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded">
-                  High Yield
-               </span>
-            </div>
-            
-            <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden border border-slate-700">
-               <div className="relative z-10 mb-8">
-                  <div className="flex items-start gap-3">
-                     <div className="p-2 bg-primary-teal/20 rounded-lg text-primary-teal">
-                        <Sparkles size={18} />
-                     </div>
-                     <div>
-                        <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-2">Expert Strategy</h3>
-                        <p className="text-sm font-medium leading-relaxed text-slate-100">
-                           {exam.prepTips}
-                        </p>
-                     </div>
-                  </div>
-               </div>
-
-               <div className="grid grid-cols-2 gap-3 relative z-10 mb-6">
-                  <a 
-                    href={`https://www.google.com/search?q=${encodeURIComponent(exam.name + ' syllabus pdf ' + new Date().getFullYear())}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group"
-                  >
-                     <Download size={20} className="text-slate-300 group-hover:text-primary-teal transition-colors" />
-                     <span className="text-xs font-bold text-slate-300">Syllabus</span>
-                  </a>
-                  <a 
-                    href={`https://www.google.com/search?q=${encodeURIComponent(exam.name + ' previous year question papers pdf')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group"
-                  >
-                     <FileText size={20} className="text-slate-300 group-hover:text-primary-teal transition-colors" />
-                     <span className="text-xs font-bold text-slate-300">PYQ Papers</span>
-                  </a>
-                  <a 
-                     href={`https://www.google.com/search?q=${encodeURIComponent(exam.name + ' free mock test online')}`}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group"
-                  >
-                     <Timer size={20} className="text-slate-300 group-hover:text-primary-teal transition-colors" />
-                     <span className="text-xs font-bold text-slate-300">Mock Tests</span>
-                  </a>
-                  <Link 
-                     href="/help"
-                     className="flex flex-col items-center justify-center gap-2 p-4 bg-gradient-to-br from-primary-teal/20 to-primary-teal/5 hover:from-primary-teal/30 hover:to-primary-teal/10 border border-primary-teal/20 rounded-2xl transition-all group"
-                  >
-                     <Sparkles size={20} className="text-primary-teal" />
-                     <span className="text-xs font-bold text-primary-teal">AI Study Plan</span>
-                  </Link>
-               </div>
-
-               <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/5">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Powered by AI Analysis</span>
-                  <Link href="/help" className="text-xs font-bold text-white hover:text-primary-teal flex items-center gap-1 transition-colors">
-                     Ask a doubt <ChevronRight size={12} />
-                  </Link>
-               </div>
-
-               <div className="absolute top-0 right-0 w-64 h-64 bg-primary-teal rounded-full blur-[80px] opacity-10 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-               <div className="absolute bottom-0 left-0 w-40 h-40 bg-secondary-purple rounded-full blur-[60px] opacity-10 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
             </div>
          </section>
 

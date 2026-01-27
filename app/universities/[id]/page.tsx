@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -5,41 +6,50 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { universities } from '../../../data/universities';
 import { 
-  MapPin, Shield, CheckCircle2, BookOpen, IndianRupee, 
-  Building2, ExternalLink, Phone, Mail, GraduationCap, 
-  ArrowLeft, Heart, ShieldCheck, Star, Navigation, Camera, Globe, X
+  MapPin, CheckCircle2, BookOpen, IndianRupee, 
+  Building2, ExternalLink, ArrowLeft, Heart, ShieldCheck, Star, Navigation, Globe
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function UniversityDetailsPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const id = params?.id as string ?? "";
+  
   const uni = universities.find(u => u.id === id);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
-      setIsSaved(saved.includes(id));
+    if (id && typeof window !== 'undefined') {
+      try {
+        const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
+        setIsSaved(saved.includes(id));
+      } catch (e) {
+        // Ignore JSON parse error
+      }
     }
   }, [id]);
 
   const toggleSave = () => {
-    if (!id) return;
-    const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
-    let newSaved;
-    if (saved.includes(id)) {
-      newSaved = saved.filter((s: string) => s !== id);
-      setIsSaved(false);
-    } else {
-      newSaved = [...saved, id];
-      setIsSaved(true);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
+    if (!id || typeof window === 'undefined') return;
+    
+    try {
+      const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
+      let newSaved;
+      if (saved.includes(id)) {
+        newSaved = saved.filter((s: string) => s !== id);
+        setIsSaved(false);
+      } else {
+        newSaved = [...saved, id];
+        setIsSaved(true);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      }
+      localStorage.setItem('tsap_saved_unis', JSON.stringify(newSaved));
+      window.dispatchEvent(new Event('favorites-updated'));
+    } catch (e) {
+      console.error("Save error", e);
     }
-    localStorage.setItem('tsap_saved_unis', JSON.stringify(newSaved));
-    window.dispatchEvent(new Event('favorites-updated'));
   };
 
   if (!uni) return <div className="p-20 text-center font-bold text-xl">University not found</div>;

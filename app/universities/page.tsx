@@ -1,23 +1,15 @@
+
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { universities } from '../../data/universities';
-import { Search, Filter, X, ChevronDown, Info, Scale, ArrowRight } from 'lucide-react';
+import { Search, Filter, X, ChevronDown } from 'lucide-react';
 import { UniversityCard } from '../../components/UniversityCard';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
 
-const FilterOption: React.FC<{ label: string, isActive: boolean, onClick: () => void }> = ({ label, isActive, onClick }) => (
-  <button 
-    onClick={onClick}
-    className={`px-5 py-3 rounded-xl text-sm font-bold border-2 transition-all ${isActive ? 'border-secondary-purple bg-secondary-purple/10 text-secondary-purple' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:border-slate-200 dark:hover:border-slate-700'}`}
-  >
-    {label}
-  </button>
-);
-
-export default function UniversitiesPage() {
+// Separate component for content that uses useSearchParams
+const UniversitiesContent = () => {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   
@@ -29,23 +21,30 @@ export default function UniversitiesPage() {
   const [visibleCount, setVisibleCount] = useState(10);
   const [savedUniversities, setSavedUniversities] = useState<string[]>([]);
 
+  // Safe search param access
   useEffect(() => {
-    const q = searchParams?.get('q');
+    const q = searchParams?.get('q') ?? "";
     if (q) {
       if (['Engineering', 'Medicine', 'Law'].includes(q)) setFilterStream(q);
       else setSearch(q);
     }
   }, [searchParams]);
 
+  // Safe localStorage access
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('tsap_saved_unis');
-      if (saved) setSavedUniversities(JSON.parse(saved));
+      try {
+        const saved = localStorage.getItem('tsap_saved_unis');
+        if (saved) setSavedUniversities(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved universities", e);
+      }
     }
   }, []);
 
   const toggleSave = (id: string) => {
     if (typeof window === 'undefined') return;
+    
     const newSaved = savedUniversities.includes(id) 
       ? savedUniversities.filter(sid => sid !== id)
       : [...savedUniversities, id];
@@ -81,7 +80,6 @@ export default function UniversitiesPage() {
     setFilterStream('All');
   };
 
-  // Helper to render content with ads interspersed
   const renderContentWithAds = () => {
     const items: React.ReactNode[] = [];
     const visibleList = filteredUniversities.slice(0, visibleCount);
@@ -96,7 +94,6 @@ export default function UniversitiesPage() {
         />
       );
       
-      // Native Ad Placeholder every 5 items
       if ((index + 1) % 5 === 0 && index !== visibleList.length - 1) {
         items.push(
           <div key={`ad-${index}`} className="col-span-1 md:col-span-2 lg:col-span-3 w-full bg-slate-50 dark:bg-slate-900/50 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center p-6 text-center my-4">
@@ -112,6 +109,15 @@ export default function UniversitiesPage() {
     });
     return items;
   };
+
+  const FilterButton: React.FC<{ label: string, isActive: boolean, onClick: () => void }> = ({ label, isActive, onClick }) => (
+    <button 
+      onClick={onClick}
+      className={`px-5 py-3 rounded-xl text-sm font-bold border-2 transition-all ${isActive ? 'border-secondary-purple bg-secondary-purple/10 text-secondary-purple' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:border-slate-200 dark:hover:border-slate-700'}`}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <div className="min-h-screen pb-32">
@@ -201,7 +207,7 @@ export default function UniversitiesPage() {
               <div className="overflow-y-auto p-6 space-y-8 pb-32">
                 <section>
                   <h3 className="font-bold text-xs uppercase text-slate-500 mb-3">State</h3>
-                  <div className="flex gap-2">{['All', 'Telangana', 'Andhra Pradesh'].map(s => <FilterOption key={s} label={s} isActive={filterState === s} onClick={() => setFilterState(s)} />)}</div>
+                  <div className="flex gap-2">{['All', 'Telangana', 'Andhra Pradesh'].map(s => <FilterButton key={s} label={s} isActive={filterState === s} onClick={() => setFilterState(s)} />)}</div>
                 </section>
                 <section>
                     <h3 className="font-bold text-sm text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -209,7 +215,7 @@ export default function UniversitiesPage() {
                     </h3>
                     <div className="flex flex-wrap gap-3">
                        {['All', 'Government', 'Private', 'Deemed', 'Autonomous'].map(opt => (
-                         <FilterOption 
+                         <FilterButton 
                            key={opt} 
                            label={opt} 
                            isActive={filterType === opt} 
@@ -225,7 +231,7 @@ export default function UniversitiesPage() {
                     </h3>
                     <div className="flex flex-wrap gap-3">
                        {['All', 'Engineering', 'Medicine', 'Pharmacy', 'Law'].map(opt => (
-                         <FilterOption 
+                         <FilterButton 
                            key={opt} 
                            label={opt} 
                            isActive={filterStream === opt} 
@@ -243,5 +249,14 @@ export default function UniversitiesPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+};
+
+// Default export wrapped in Suspense for build safety
+export default function UniversitiesPage() {
+  return (
+    <Suspense fallback={<div className="p-20 text-center animate-pulse">Loading Universities...</div>}>
+      <UniversitiesContent />
+    </Suspense>
   );
 }

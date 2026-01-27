@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -5,55 +6,57 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { exams } from '../../../data/exams';
 import { 
-  ArrowLeft, ExternalLink, Calendar, CheckCircle2, School, 
-  BookOpen, Clock, AlertCircle, ChevronDown, ChevronUp, 
-  Youtube, Heart, Share2, Wallet, Users, Globe, FileText, Zap,
-  Timer, Award, Download, BellRing, BarChart3, MapPin, ArrowRight,
-  HelpCircle, BrainCircuit, Sparkles, ChevronRight
+  ArrowLeft, ExternalLink, Calendar, CheckCircle2, 
+  Clock, Heart, Share2, Users, Globe, FileText, Zap,
+  Timer, Download, MapPin, ArrowRight, Sparkles, ChevronRight, School
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExamDetailsPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const id = params?.id as string ?? "";
   
   const exam = exams.find(e => e.id === id);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [daysLeft, setDaysLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    if (id) {
-      const saved = JSON.parse(localStorage.getItem('tsap_saved_exams') || '[]');
-      setIsSaved(saved.includes(id));
+    if (id && typeof window !== 'undefined') {
+      try {
+        const saved = JSON.parse(localStorage.getItem('tsap_saved_exams') || '[]');
+        setIsSaved(saved.includes(id));
+      } catch (e) { }
     }
-  }, [id]);
+    
+    if (exam?.applicationEnd) {
+      const end = new Date(exam.applicationEnd);
+      const now = new Date();
+      const diff = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      setDaysLeft(diff);
+    }
+  }, [id, exam]);
 
   const toggleSave = () => {
-    if (!id) return;
-    const saved = JSON.parse(localStorage.getItem('tsap_saved_exams') || '[]');
-    let newSaved;
-    if (saved.includes(id)) {
-      newSaved = saved.filter((s: string) => s !== id);
-      setIsSaved(false);
-    } else {
-      newSaved = [...saved, id];
-      setIsSaved(true);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
-    }
-    localStorage.setItem('tsap_saved_exams', JSON.stringify(newSaved));
+    if (!id || typeof window === 'undefined') return;
+    
+    try {
+      const saved = JSON.parse(localStorage.getItem('tsap_saved_exams') || '[]');
+      let newSaved;
+      if (saved.includes(id)) {
+        newSaved = saved.filter((s: string) => s !== id);
+        setIsSaved(false);
+      } else {
+        newSaved = [...saved, id];
+        setIsSaved(true);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      }
+      localStorage.setItem('tsap_saved_exams', JSON.stringify(newSaved));
+    } catch (e) {}
   };
 
   if (!id || !exam) return <div className="p-20 text-center font-bold text-xl">Exam not found</div>;
-
-  const getDaysLeft = () => {
-    if (!exam.applicationEnd) return null;
-    const end = new Date(exam.applicationEnd);
-    const now = new Date();
-    const diff = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return diff;
-  };
-  const daysLeft = getDaysLeft();
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-32 selection:bg-primary-teal/20">
@@ -278,7 +281,7 @@ export default function ExamDetailsPage() {
                      href="/help"
                      className="flex flex-col items-center justify-center gap-2 p-4 bg-gradient-to-br from-primary-teal/20 to-primary-teal/5 hover:from-primary-teal/30 hover:to-primary-teal/10 border border-primary-teal/20 rounded-2xl transition-all group"
                   >
-                     <BrainCircuit size={20} className="text-primary-teal" />
+                     <Sparkles size={20} className="text-primary-teal" />
                      <span className="text-xs font-bold text-primary-teal">AI Study Plan</span>
                   </Link>
                </div>
@@ -336,15 +339,6 @@ export default function ExamDetailsPage() {
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-40 safe-pb shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
          <div className="max-w-3xl mx-auto flex gap-3">
-            <a 
-              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exam.name + ' exam preparation')}`}
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-3.5 rounded-2xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700"
-            >
-               <Youtube size={18} className="text-red-600" />
-               <span className="text-sm">Video Guide</span>
-            </a>
             <a 
               href={exam.website} 
               target="_blank" 

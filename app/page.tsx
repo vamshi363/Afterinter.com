@@ -1,24 +1,24 @@
+
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Award, ChevronRight, Building2, Compass, ArrowRight, Bell, CalendarClock, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Award, ChevronRight, Building2, Compass, ArrowRight, Bell, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { scholarships } from '../data/scholarships';
 import { exams } from '../data/exams';
 
 export default function HomePage() {
   const [showReminder, setShowReminder] = useState(false);
-  
-  const handleSetReminder = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setShowReminder(true);
-    setTimeout(() => setShowReminder(false), 3000);
-  };
+  const [mounted, setMounted] = useState(false);
+  const [endingSoonExams, setEndingSoonExams] = useState<any[]>([]);
 
-  const endingSoonExams = useMemo(() => {
+  // Prevent hydration mismatch by calculating dates only on client
+  useEffect(() => {
+    setMounted(true);
     const today = new Date();
-    return exams
+    
+    const filtered = exams
       .filter(e => e.applicationEnd)
       .map(e => {
         const endDate = new Date(e.applicationEnd!);
@@ -29,7 +29,20 @@ export default function HomePage() {
       .filter(e => e.daysLeft >= 0 && e.daysLeft <= 30)
       .sort((a, b) => a.daysLeft - b.daysLeft)
       .slice(0, 5);
+      
+    setEndingSoonExams(filtered);
   }, []);
+
+  const handleSetReminder = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowReminder(true);
+    setTimeout(() => setShowReminder(false), 3000);
+  };
+
+  // Fallback for SSR to prevent blank flash or mismatch
+  if (!mounted) {
+    return <div className="min-h-screen bg-slate-50 dark:bg-slate-950 animate-pulse" />;
+  }
 
   return (
     <div className="w-full relative">

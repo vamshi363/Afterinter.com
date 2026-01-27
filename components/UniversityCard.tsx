@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { University } from '../types';
 import { MapPin, Building2, IndianRupee, BookOpen, Heart, CheckCircle2, ArrowRight, FileText, Shield, UserCheck, ChevronDown, ChevronUp } from 'lucide-react';
@@ -19,6 +20,15 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
 
   const isSaved = propIsSaved !== undefined ? propIsSaved : localIsSaved;
 
+  useEffect(() => {
+    if (propIsSaved === undefined && typeof window !== 'undefined') {
+      try {
+        const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
+        setLocalIsSaved(saved.includes(uni.id));
+      } catch(e) {}
+    }
+  }, [uni.id, propIsSaved]);
+
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -30,6 +40,8 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         setTimeout(() => setShowToast(false), 2000);
       }
     } else {
+      if (typeof window === 'undefined') return;
+      
       const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
       let newSaved;
       
@@ -45,9 +57,8 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         setTimeout(() => setShowToast(false), 2000);
       }
       localStorage.setItem('tsap_saved_unis', JSON.stringify(newSaved));
+      window.dispatchEvent(new Event('favorites-updated'));
     }
-    
-    window.dispatchEvent(new Event('favorites-updated'));
   };
 
   const toggleParentInfo = (e: React.MouseEvent) => {

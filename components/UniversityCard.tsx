@@ -1,8 +1,9 @@
+'use client';
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { University } from '../types';
-import { MapPin, Building2, IndianRupee, BookOpen, Heart, Info, CheckCircle2, ArrowRight, FileText, Shield, UserCheck, ChevronDown, ChevronUp } from 'lucide-react';
+import { MapPin, Building2, IndianRupee, BookOpen, Heart, CheckCircle2, ArrowRight, FileText, Shield, UserCheck, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface UniversityCardProps {
@@ -16,7 +17,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
   const [showToast, setShowToast] = useState(false);
   const [showParentInfo, setShowParentInfo] = useState(false); 
 
-  // Determine if we use controlled state (prop) or local state
   const isSaved = propIsSaved !== undefined ? propIsSaved : localIsSaved;
 
   const handleSave = (e: React.MouseEvent) => {
@@ -25,17 +25,14 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
     
     if (onToggleSave) {
       onToggleSave(uni.id);
-      // Trigger toast only if we are saving (not unsaving)
       if (!isSaved) {
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
       }
     } else {
-      // Local storage logic if no handler provided (fallback)
       const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
       let newSaved;
       
-      // Since localIsSaved might be out of sync if used mixed, better to rely on actual data check
       const actuallySaved = saved.includes(uni.id);
       
       if (actuallySaved) {
@@ -50,7 +47,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
       localStorage.setItem('tsap_saved_unis', JSON.stringify(newSaved));
     }
     
-    // Dispatch custom event for BottomNav badge to update
     window.dispatchEvent(new Event('favorites-updated'));
   };
 
@@ -60,25 +56,21 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
     setShowParentInfo(!showParentInfo);
   };
 
-  // 1. SUITABILITY LOGIC (Strictly based on rank/competition)
   const getSuitability = () => {
     const rank = uni.cutoffs[0]?.rank || 50000;
     
-    // Highly Competitive (Red)
     if (rank < 5000) return { 
       label: 'Highly competitive', 
       color: 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800',
       dotColor: 'bg-red-500'
     };
     
-    // Moderate (Yellow)
     if (rank < 25000) return { 
       label: 'Moderate cutoff', 
       color: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-800',
       dotColor: 'bg-amber-500'
     };
     
-    // Good Chance / Accessible (Green)
     return { 
       label: 'Good chance', 
       color: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-800',
@@ -88,7 +80,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
 
   const suitability = getSuitability();
 
-  // 2. REASSURING MICRO COPY 
   const getMicroCopy = () => {
     if (uni.type === 'Government') return "Affordable government degree with high value.";
     if (uni.naacGrade.includes('A++')) return "Top-rated infrastructure and faculty.";
@@ -107,7 +98,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
       whileTap={{ scale: 0.99 }}
       className="bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden relative flex flex-col h-full shadow-sm hover:shadow-xl transition-all duration-300 w-full"
     >
-      {/* Toast Feedback */}
       <AnimatePresence>
         {showToast && (
           <motion.div 
@@ -122,15 +112,12 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         )}
       </AnimatePresence>
 
-      {/* --- 1. HEADER & IDENTITY --- */}
       <div className="p-5 pb-2">
         <div className="flex gap-4 items-start">
-          {/* Logo */}
           <div className="w-14 h-14 shrink-0 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-1 flex items-center justify-center overflow-hidden shadow-sm">
             <span className="text-xl font-black text-slate-400 dark:text-slate-500">{uni.name.charAt(0)}</span>
           </div>
 
-          {/* Name & Location */}
           <div className="flex-grow min-w-0">
             <h3 className="font-bold text-lg leading-tight text-slate-900 dark:text-white line-clamp-2 mb-1">
               {uni.name}
@@ -140,7 +127,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
               <MapPin size={12} className="mr-1 text-slate-400" /> {uni.city}, {uni.state}
             </div>
 
-            {/* Trust Badges */}
             <div className="flex flex-wrap gap-1.5">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border ${uni.type === 'Government' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-slate-50 border-slate-100 text-slate-500'} dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300`}>
                 {uni.type}
@@ -158,7 +144,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         </div>
       </div>
 
-      {/* --- 2. SUITABILITY TAG --- */}
       <div className="px-5 mb-4">
         <div className={`py-2.5 px-3 rounded-lg text-xs font-bold flex items-center gap-2 border ${suitability.color}`}>
           <div className={`w-2 h-2 rounded-full ${suitability.dotColor} animate-pulse`}></div>
@@ -166,7 +151,6 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         </div>
       </div>
 
-      {/* --- 3. QUICK FACTS --- */}
       <div className="px-5">
         <div className="grid grid-cols-2 gap-px bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 flex items-center gap-2.5">
@@ -200,13 +184,11 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         </div>
       </div>
 
-      {/* --- 4. WHY CHOOSE & PARENT INFO --- */}
       <div className="px-5 py-4 flex-grow flex flex-col justify-end">
         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l-2 border-primary-teal/30 pl-3 mb-3 italic">
           "{getMicroCopy()}"
         </p>
 
-        {/* Parent Indicators */}
         <div className="relative">
           <button 
             onClick={toggleParentInfo}
@@ -246,10 +228,9 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
         </div>
       </div>
 
-      {/* --- 5. ACTION BUTTONS (44px+) --- */}
       <div className="p-5 pt-0 mt-auto grid grid-cols-[1fr,auto] gap-3">
         <Link 
-          to={`/universities/${uni.id}`}
+          href={`/universities/${uni.id}`}
           className="flex items-center justify-center gap-2 h-12 bg-primary-teal hover:bg-teal-600 active:bg-teal-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-primary-teal/20 text-sm group/btn"
         >
           <span>View Details</span>

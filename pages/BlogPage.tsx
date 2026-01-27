@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { blogPosts } from '../data/blogPosts';
 import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
 
-const BlogPage: React.FC = () => {
+export const BlogPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -64,5 +64,3 @@ const BlogPage: React.FC = () => {
     </div>
   );
 };
-
-export default BlogPage;

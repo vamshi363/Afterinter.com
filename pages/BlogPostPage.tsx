@@ -7,7 +7,7 @@ import { blogPosts } from '../data/blogPosts';
 import { ArrowLeft, Calendar, Tag, User } from 'lucide-react';
 import { AdSense } from '../components/AdSense';
 
-const BlogPostPage: React.FC = () => {
+export const BlogPostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
 
@@ -88,5 +88,3 @@ const BlogPostPage: React.FC = () => {
     </div>
   );
 };
-
-export default BlogPostPage;

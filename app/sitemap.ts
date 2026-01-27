@@ -16,10 +16,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/contact',
     '/privacy-policy',
     '/terms',
+    '/disclaimer',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'daily' as const,
     priority: route === '' ? 1 : 0.8,
   }));
 

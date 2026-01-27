@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { exams } from '../../../data/exams';
 import ExamDetailClient from './ExamDetailClient';
@@ -9,8 +10,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const exam = exams.find((e) => e.id === params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const exam = exams.find((e) => e.id === id);
   if (!exam) return { title: 'Exam Not Found' };
   
   return {
@@ -23,8 +25,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default function Page({ params }: { params: { id: string } }) {
-  const exam = exams.find((e) => e.id === params.id);
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const exam = exams.find((e) => e.id === id);
 
   if (!exam) {
     return <div className="p-20 text-center font-bold text-xl">Exam not found</div>;

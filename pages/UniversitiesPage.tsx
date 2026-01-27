@@ -90,7 +90,7 @@ const UniversitiesPage: React.FC = () => {
 
   // Helper to render content with ads interspersed
   const renderContentWithAds = () => {
-    const items = [];
+    const items: React.ReactNode[] = []; // Explicitly typed array
     const visibleList = filteredUniversities.slice(0, visibleCount);
 
     visibleList.forEach((uni, index) => {

@@ -1,7 +1,6 @@
-
 import React from 'react';
 
-export const LegalPage: React.FC<{ title: string }> = ({ title }) => (
+const LegalPage: React.FC<{ title?: string }> = ({ title = "Legal" }) => (
   <div className="max-w-4xl mx-auto px-4 py-20">
     <h1 className="text-4xl font-bold mb-8">{title}</h1>
     <div className="prose dark:prose-invert prose-slate max-w-none space-y-6 text-slate-600 dark:text-slate-400">
@@ -40,3 +39,5 @@ export const LegalPage: React.FC<{ title: string }> = ({ title }) => (
     </div>
   </div>
 );
+
+export default LegalPage;

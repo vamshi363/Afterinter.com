@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Award, ChevronRight, Building2, Compass, ArrowRight, Bell, CalendarClock, CheckCircle2, AlertTriangle, ShieldCheck, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { scholarships } from '../data/scholarships';
 import { exams } from '../data/exams';
 
@@ -135,14 +137,14 @@ const HomePage: React.FC = () => {
             className="flex flex-row items-center justify-center gap-3 md:gap-5 w-full max-w-2xl mx-auto"
           >
              <Link 
-               to="/universities" 
+               href="/universities" 
                className="w-full flex-1 bg-white text-teal-800 hover:bg-teal-50 px-3 md:px-6 py-3.5 rounded-2xl font-black text-sm md:text-xl uppercase tracking-wider transition-all shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2)] hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-2 md:gap-3 border-2 border-transparent hover:border-teal-200"
              >
                <Building2 className="shrink-0 w-5 h-5 md:w-6 md:h-6" />
                Universities
              </Link>
              <Link 
-               to="/scholarships" 
+               href="/scholarships" 
                className="w-full flex-1 bg-secondary-purple hover:bg-purple-600 text-white px-3 md:px-6 py-3.5 rounded-2xl font-black text-sm md:text-xl uppercase tracking-wider transition-all shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2)] hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-2 md:gap-3 border-2 border-transparent hover:border-purple-400"
              >
                <Award className="shrink-0 w-5 h-5 md:w-6 md:h-6" />
@@ -157,7 +159,7 @@ const HomePage: React.FC = () => {
              transition={{ delay: 0.5 }}
              className="mt-10 flex justify-center"
           >
-             <Link to="/exam-finder" className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-amber-300 to-yellow-400 text-amber-950 px-6 py-3.5 rounded-full text-sm md:text-base font-black shadow-[0_10px_30px_-10px_rgba(251,191,36,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(251,191,36,0.7)] hover:scale-105 transition-all duration-300 border border-yellow-200/50">
+             <Link href="/exam-finder" className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-amber-300 to-yellow-400 text-amber-950 px-6 py-3.5 rounded-full text-sm md:text-base font-black shadow-[0_10px_30px_-10px_rgba(251,191,36,0.5)] hover:shadow-[0_10px_40px_-10px_rgba(251,191,36,0.7)] hover:scale-105 transition-all duration-300 border border-yellow-200/50">
                <span className="absolute -top-2.5 -right-2 bg-white text-amber-600 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm border border-amber-100 animate-bounce">
                   AI Tool
                </span>
@@ -179,7 +181,7 @@ const HomePage: React.FC = () => {
                   <h2 className="text-2xl md:text-3xl font-black mb-1">Exams Beyond EAMCET</h2>
                   <p className="text-slate-500 text-sm font-medium">Top colleges also accept these entrance exams.</p>
                </div>
-               <Link to="/exams" className="text-slate-400 hover:text-slate-600 font-bold text-xs flex items-center">
+               <Link href="/exams" className="text-slate-400 hover:text-slate-600 font-bold text-xs flex items-center">
                   View All <ChevronRight size={14} />
                </Link>
             </div>
@@ -224,13 +226,13 @@ const HomePage: React.FC = () => {
 
                         <div className="grid grid-cols-2 gap-2 mt-2">
                            <Link 
-                              to={`/exams/${exam.id}`}
+                              href={`/exams/${exam.id}`}
                               className="py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs text-center hover:opacity-90 transition-opacity shadow-sm"
                            >
                               View Exam Details
                            </Link>
                            <Link 
-                              to={`/universities?q=${encodeURIComponent(exam.name)}`}
+                              href={`/universities?q=${encodeURIComponent(exam.name)}`}
                               className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-xs text-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                            >
                               View Colleges
@@ -240,7 +242,7 @@ const HomePage: React.FC = () => {
                   ))}
                   
                   {/* Explore More Card */}
-                  <Link to="/exams" className="snap-center w-40 bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] flex flex-col items-center justify-center text-center p-4 border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-primary-teal transition-colors group">
+                  <Link href="/exams" className="snap-center w-40 bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] flex flex-col items-center justify-center text-center p-4 border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-primary-teal transition-colors group">
                      <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
                         <ArrowRight size={20} className="text-slate-400 group-hover:text-primary-teal" />
                      </div>
@@ -264,7 +266,7 @@ const HomePage: React.FC = () => {
                     AI-Verified deadlines from official sources.
                  </p>
               </div>
-              <Link to="/exams" className="text-xs font-bold text-primary-teal hover:text-teal-700 flex items-center gap-1 mb-1">
+              <Link href="/exams" className="text-xs font-bold text-primary-teal hover:text-teal-700 flex items-center gap-1 mb-1">
                  View all exams <ArrowRight size={12} />
               </Link>
            </div>
@@ -321,7 +323,7 @@ const HomePage: React.FC = () => {
 
                       <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
                          <Link 
-                            to={`/exams/${exam.id}`} 
+                            href={`/exams/${exam.id}`} 
                             className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3 rounded-xl text-sm font-bold text-center hover:opacity-90 transition-opacity"
                          >
                             View Exam
@@ -354,7 +356,7 @@ const HomePage: React.FC = () => {
               ) : (
                 <div className="text-center py-8 bg-white dark:bg-slate-900 rounded-[1.5rem] border border-dashed border-slate-200 dark:border-slate-800">
                    <p className="text-slate-500 text-sm font-medium">No deadlines closing in the next 30 days.</p>
-                   <Link to="/exams" className="text-primary-teal font-bold text-xs mt-2 inline-block">View upcoming calendar</Link>
+                   <Link href="/exams" className="text-primary-teal font-bold text-xs mt-2 inline-block">View upcoming calendar</Link>
                 </div>
               )}
            </div>
@@ -378,7 +380,7 @@ const HomePage: React.FC = () => {
               <h2 className="text-2xl md:text-4xl font-black mb-2">Scholarships closing soon</h2>
               <p className="text-slate-500 font-medium text-sm md:text-base">Don't miss the deadline for these official schemes.</p>
             </div>
-            <Link to="/scholarships" className="text-secondary-purple font-black flex items-center hover:underline group text-xs md:text-base">
+            <Link href="/scholarships" className="text-secondary-purple font-black flex items-center hover:underline group text-xs md:text-base">
               See All <ChevronRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -399,7 +401,7 @@ const HomePage: React.FC = () => {
                   <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium leading-relaxed">{scholar.eligibility.substring(0, 90)}...</p>
                   <div className="flex items-center justify-between mt-auto">
                     <div className="text-[10px] font-black text-red-500 uppercase tracking-widest">Ends: {scholar.deadline}</div>
-                    <Link to={`/scholarships/${scholar.id}`} className="text-secondary-purple font-black flex items-center text-xs uppercase tracking-widest hover:translate-x-1 transition-transform">
+                    <Link href={`/scholarships/${scholar.id}`} className="text-secondary-purple font-black flex items-center text-xs uppercase tracking-widest hover:translate-x-1 transition-transform">
                       Check Eligibility <ChevronRight size={16} className="ml-1" />
                     </Link>
                   </div>
@@ -424,10 +426,10 @@ const HomePage: React.FC = () => {
             <h2 className="text-2xl md:text-5xl font-black mb-4">Start your journey with confidence.</h2>
             <p className="text-base md:text-lg mb-8 opacity-90 max-w-2xl mx-auto font-medium">We gather data from verified government sources so you can make the right decision for your future.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-               <Link to="/universities" className="w-full sm:w-auto bg-white text-primary-teal px-8 py-4 rounded-2xl font-black text-lg hover:bg-slate-50 transition-all shadow-xl hover:-translate-y-1">
+               <Link href="/universities" className="w-full sm:w-auto bg-white text-primary-teal px-8 py-4 rounded-2xl font-black text-lg hover:bg-slate-50 transition-all shadow-xl hover:-translate-y-1">
                  Browse Colleges
                </Link>
-               <Link to="/help" className="w-full sm:w-auto bg-teal-800 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-teal-900 transition-all shadow-xl hover:-translate-y-1">
+               <Link href="/help" className="w-full sm:w-auto bg-teal-800 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-teal-900 transition-all shadow-xl hover:-translate-y-1">
                  Ask AI Advisor
                </Link>
             </div>

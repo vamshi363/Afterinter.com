@@ -1,30 +1,33 @@
+'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { universities } from '../data/universities';
 import { University } from '../types';
 import { 
   ArrowLeft, X, Plus, CheckCircle2, TrendingUp, 
-  IndianRupee, Building2, GraduationCap, Award, 
-  MapPin, ShieldCheck, Sparkles, ExternalLink, HelpCircle, Info 
+  IndianRupee, Building2, ShieldCheck, Sparkles, 
+  Info 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ComparePage: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [showCounselingAd, setShowCounselingAd] = useState(true);
 
   // Load IDs from URL or Local Storage
   useEffect(() => {
-    const idsFromUrl = searchParams.get('ids')?.split(',') || [];
+    const idsFromUrl = searchParams?.get('ids')?.split(',') || [];
     if (idsFromUrl.length > 0) {
       setSelectedIds(idsFromUrl.filter(id => id));
     } else {
       // Fallback to saved items if no URL params
-      const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
-      if (saved.length > 0) setSelectedIds(saved.slice(0, 3)); // Max 3 default
+      if (typeof window !== 'undefined') {
+        const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
+        if (saved.length > 0) setSelectedIds(saved.slice(0, 3)); // Max 3 default
+      }
     }
   }, [searchParams]);
 
@@ -37,8 +40,8 @@ const ComparePage: React.FC = () => {
     setSelectedIds(newIds);
     // Update URL without reloading
     const newUrl = newIds.length > 0 ? `/compare?ids=${newIds.join(',')}` : '/saved';
-    if (newIds.length === 0) navigate('/saved');
-    else window.history.replaceState(null, '', `/#${newUrl}`);
+    if (newIds.length === 0) router.push('/saved');
+    else router.replace(newUrl);
   };
 
   // --- HELPER LOGIC FOR COMPARISON ---
@@ -73,7 +76,7 @@ const ComparePage: React.FC = () => {
       <div className="sticky top-0 z-30 bg-white dark:bg-slate-900 shadow-sm border-b border-slate-200 dark:border-slate-800">
          <div className="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center gap-3">
-               <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+               <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                   <ArrowLeft size={20} />
                </button>
                <div>
@@ -115,7 +118,7 @@ const ComparePage: React.FC = () => {
             </AnimatePresence>
             
             {selectedIds.length < 3 && (
-               <Link to="/saved" className="flex-shrink-0 w-36 bg-white dark:bg-slate-900 rounded-xl p-3 border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-slate-400 hover:border-primary-teal hover:text-primary-teal transition-colors">
+               <Link href="/saved" className="flex-shrink-0 w-36 bg-white dark:bg-slate-900 rounded-xl p-3 border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-slate-400 hover:border-primary-teal hover:text-primary-teal transition-colors">
                   <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-2">
                      <Plus size={20} />
                   </div>
@@ -132,7 +135,7 @@ const ComparePage: React.FC = () => {
             </div>
             <h2 className="text-xl font-bold mb-2">No Colleges Selected</h2>
             <p className="text-slate-500 mb-6 max-w-xs">Select colleges from your saved list to start comparing them side-by-side.</p>
-            <Link to="/saved" className="px-8 py-3 bg-primary-teal text-white rounded-xl font-bold shadow-lg">Go to Saved Colleges</Link>
+            <Link href="/saved" className="px-8 py-3 bg-primary-teal text-white rounded-xl font-bold shadow-lg">Go to Saved Colleges</Link>
          </div>
       ) : (
          <div className="max-w-7xl mx-auto">
@@ -214,7 +217,7 @@ const ComparePage: React.FC = () => {
                            <span className="text-sm font-bold flex items-center gap-1">
                               {uni.state === 'Telangana' ? 'ePASS' : 'JVD'} Eligible <CheckCircle2 size={12} className="text-green-500" />
                            </span>
-                           <Link to={`/scholarships?type=State`} className="text-[10px] font-bold text-secondary-purple underline">
+                           <Link href={`/scholarships?type=State`} className="text-[10px] font-bold text-secondary-purple underline">
                               Check Eligibility
                            </Link>
                         </div>
@@ -282,7 +285,7 @@ const ComparePage: React.FC = () => {
                      <div className="min-w-[200px] p-3 bg-secondary-purple/5 rounded-xl border border-secondary-purple/10">
                         <h4 className="font-bold text-sm text-secondary-purple mb-1">Scholarship Search</h4>
                         <p className="text-xs text-slate-500 mb-2">Find private grants matching your profile.</p>
-                        <Link to="/scholarships" className="text-xs font-bold underline decoration-dotted">View Options</Link>
+                        <Link href="/scholarships" className="text-xs font-bold underline decoration-dotted">View Options</Link>
                      </div>
                      <div className="min-w-[200px] p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800">
                         <h4 className="font-bold text-sm text-blue-600 mb-1">Education Loan</h4>
@@ -300,13 +303,13 @@ const ComparePage: React.FC = () => {
          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-40 safe-pb shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             <div className="max-w-7xl mx-auto flex gap-3">
                <Link 
-                  to={`/universities/${selectedIds[0]}`}
+                  href={`/universities/${selectedIds[0]}`}
                   className="flex-1 py-3.5 rounded-xl font-bold text-sm text-center border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
                >
                   View {selectedUnis[0]?.name.split(' ')[0]}
                </Link>
                <button 
-                  onClick={() => navigate('/saved')}
+                  onClick={() => router.push('/saved')}
                   className="flex-1 bg-primary-teal text-white py-3.5 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-transform"
                >
                   Save Final Choice

@@ -1,6 +1,8 @@
+'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { universities } from '../data/universities';
 import { Search, Filter, X, ChevronDown, Check, Info, ArrowRight, Loader2, Scale } from 'lucide-react';
 import { UniversityCard } from '../components/UniversityCard';
@@ -23,7 +25,7 @@ const HeartIcon = () => (
 );
 
 const UniversitiesPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState('');
   
   // Mobile Filter State
@@ -38,7 +40,7 @@ const UniversitiesPage: React.FC = () => {
 
   // Init from URL
   useEffect(() => {
-    const q = searchParams.get('q');
+    const q = searchParams?.get('q');
     if (q) {
       if (['Engineering', 'Medicine', 'Law'].includes(q)) {
         setFilterStream(q);
@@ -267,7 +269,7 @@ const UniversitiesPage: React.FC = () => {
                     </div>
                  </div>
                  <Link 
-                   to={`/compare?ids=${savedUniversities.slice(0,3).join(',')}`}
+                   href={`/compare?ids=${savedUniversities.slice(0,3).join(',')}`}
                    className="px-6 py-3 bg-white text-slate-900 rounded-xl font-bold text-sm hover:bg-slate-100 transition-colors flex items-center gap-2 shadow-md active:scale-95"
                  >
                    Compare <ArrowRight size={14} />

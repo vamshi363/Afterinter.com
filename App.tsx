@@ -16,7 +16,7 @@ import SavedPage from './pages/SavedPage';
 import ComparePage from './pages/ComparePage';
 import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
-import { LegalPage } from './pages/LegalPage';
+import LegalPage from './pages/LegalPage';
 
 // Component to scroll to top on route change
 const ScrollToTop = () => {

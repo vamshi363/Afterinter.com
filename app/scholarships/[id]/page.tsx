@@ -8,7 +8,8 @@ import { Award, ChevronRight, Globe, FileText, CheckCircle2, Info, AlertCircle, 
 import { motion } from 'framer-motion';
 
 export default function ScholarshipDetailsPage() {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const scholar = scholarships.find(s => s.id === id);
 
   if (!scholar) return <div className="p-20 text-center">Scholarship not found</div>;

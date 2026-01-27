@@ -14,7 +14,9 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExamDetailsPage() {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  
   const exam = exams.find(e => e.id === id);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -42,7 +44,7 @@ export default function ExamDetailsPage() {
     localStorage.setItem('tsap_saved_exams', JSON.stringify(newSaved));
   };
 
-  if (!exam) return <div className="p-20 text-center font-bold text-xl">Exam not found</div>;
+  if (!id || !exam) return <div className="p-20 text-center font-bold text-xl">Exam not found</div>;
 
   const getDaysLeft = () => {
     if (!exam.applicationEnd) return null;

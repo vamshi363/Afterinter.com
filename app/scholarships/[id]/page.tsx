@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 export default function ScholarshipDetailsPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const id = params?.id as string ?? "";
   const scholar = scholarships.find(s => s.id === id);
 
   if (!scholar) return <div className="p-20 text-center">Scholarship not found</div>;

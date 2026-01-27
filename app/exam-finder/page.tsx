@@ -76,6 +76,7 @@ const QuestionStep: React.FC<{
 
 export default function ExamFinderPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState<QuizStatus>('intro');
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState<QuizState>({
@@ -85,6 +86,10 @@ export default function ExamFinderPage() {
     location: '',
     backup: ''
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const totalSteps = 5;
 
@@ -285,6 +290,10 @@ export default function ExamFinderPage() {
         return null;
     }
   };
+
+  if (!mounted) {
+    return <div className="min-h-screen bg-slate-50 dark:bg-slate-950" />;
+  }
 
   if (status === 'intro') {
      return (

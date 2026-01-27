@@ -5,6 +5,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BottomNav from '@/components/BottomNav';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -49,7 +50,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-REPLACE_ME" crossOrigin="anonymous"></script>
+        <Script
+          id="adsense-script"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-REPLACE_ME"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </head>
       <body className={`${inter.className} bg-slate-950 text-slate-100 transition-colors duration-200 flex flex-col min-h-screen`}>
         <Navbar />

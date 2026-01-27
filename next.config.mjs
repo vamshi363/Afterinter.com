@@ -13,6 +13,8 @@ const nextConfig = {
       }
     ],
   },
+  // Ensure trailing slashes are handled correctly for SEO
+  trailingSlash: false,
 };
 
 export default nextConfig;

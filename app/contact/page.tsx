@@ -32,4 +32,70 @@ export default function ContactPage() {
             </a>
           </div>
 
-          <div className="bg-white dark:bg-slate-90
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-3">
+              <MapPin className="text-secondary-purple" /> Office Location
+            </h3>
+            <p className="text-slate-500 text-sm leading-relaxed">
+              <strong>After Inter Digital Team</strong><br />
+              Hitech City, Madhapur<br />
+              Hyderabad, Telangana - 500081<br />
+              India
+            </p>
+          </div>
+          
+          <div className="bg-blue-50 dark:bg-blue-900/10 p-6 rounded-3xl border border-blue-100 dark:border-blue-800">
+             <h4 className="font-bold text-blue-700 dark:text-blue-400 text-sm mb-2 flex items-center gap-2">
+               <ShieldCheck size={16} /> Note on Counseling
+             </h4>
+             <p className="text-xs text-blue-600 dark:text-blue-300 leading-relaxed">
+               We provide information services only. We are not a direct counseling authority. Please contact TSCHE or APSCHE for official admission disputes.
+             </p>
+          </div>
+        </div>
+
+        {/* Contact Form */}
+        <div className="bg-slate-50 dark:bg-slate-800 p-8 md:p-10 rounded-[2.5rem]">
+          {submitted ? (
+            <div className="h-full flex flex-col items-center justify-center text-center py-10">
+              <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
+                <CheckCircle2 size={40} />
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Message Sent!</h3>
+              <p className="text-slate-500 text-sm mb-8">Thank you for reaching out. We usually respond within 24-48 business hours.</p>
+              <button onClick={() => setSubmitted(false)} className="text-primary-teal font-bold text-sm hover:underline">Send another message</button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Your Name</label>
+                <input required type="text" className="w-full p-4 rounded-xl border-none bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-teal outline-none transition-all shadow-sm" placeholder="Student / Parent Name" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Email Address</label>
+                <input required type="email" className="w-full p-4 rounded-xl border-none bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-teal outline-none transition-all shadow-sm" placeholder="you@example.com" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Topic</label>
+                <select className="w-full p-4 rounded-xl border-none bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-teal outline-none transition-all shadow-sm">
+                  <option>Data Correction / Update</option>
+                  <option>Advertising Inquiry</option>
+                  <option>Scholarship Help</option>
+                  <option>Technical Issue</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Message</label>
+                <textarea required rows={4} className="w-full p-4 rounded-xl border-none bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary-teal outline-none transition-all shadow-sm" placeholder="How can we help you?"></textarea>
+              </div>
+              <button type="submit" className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg">
+                Send Message <Send size={18} />
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

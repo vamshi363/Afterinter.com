@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
@@ -9,7 +8,7 @@ import { University } from '../../types';
 import { 
   ArrowLeft, X, Plus, TrendingUp, 
   IndianRupee, Building2, ShieldCheck, Sparkles, 
-  Info 
+  Info, CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -160,15 +159,158 @@ const CompareContent = () => {
                      ))}
                   </div>
 
-                  {/* Rest of the table content... omitted for brevity, logic remains identical to original but wrapped in Suspense */}
-                  {/* ... */}
+                  {/* --- SECTION 2: ADMISSION --- */}
+                  <div className="bg-slate-50/50 dark:bg-slate-900/50 py-2 px-4 text-xs font-black uppercase text-slate-400 tracking-widest sticky left-0">Admission</div>
+                  
+                  <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Exam Accepted</div>, true)}
+                     {selectedUnis.map(uni => renderCell(<span className="text-sm font-medium">{uni.courses[0]?.eligibility.split(' ')[0] || 'Entrance'}</span>))}
+                  </div>
+                  <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Difficulty</div>, true)}
+                     {selectedUnis.map(uni => {
+                        const rank = getRankValue(uni);
+                        const difficulty = rank < 5000 ? 'High' : rank < 20000 ? 'Medium' : 'Low';
+                        const color = difficulty === 'High' ? 'text-red-500' : difficulty === 'Medium' ? 'text-amber-500' : 'text-green-500';
+                        return renderCell(<span className={`text-sm font-bold ${color}`}>{difficulty}</span>);
+                     })}
+                  </div>
+
+                  {/* --- SECTION 3: FEES (Critical) --- */}
+                  <div className="bg-slate-50/50 dark:bg-slate-900/50 py-2 px-4 text-xs font-black uppercase text-slate-400 tracking-widest sticky left-0 mt-4">Fees & Cost</div>
+
+                  <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Tuition (Year)</div>, true)}
+                     {selectedUnis.map(uni => {
+                        const isLowest = uni.id === lowestFeeId;
+                        return renderCell(
+                           <span className={`text-sm font-bold ${isLowest ? 'text-green-600' : ''}`}>
+                              {uni.fees.tuition}
+                           </span>, 
+                           false, 
+                           isLowest ? 'green' : undefined
+                        );
+                     })}
+                  </div>
+                  <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Hostel</div>, true)}
+                     {selectedUnis.map(uni => renderCell(<span className="text-sm font-medium text-slate-500">{uni.fees.hostel}</span>))}
+                  </div>
+
+                   {/* --- SECTION 4: SCHOLARSHIPS --- */}
+                  <div className="bg-slate-50/50 dark:bg-slate-900/50 py-2 px-4 text-xs font-black uppercase text-slate-400 tracking-widest sticky left-0 mt-4">Scholarships</div>
+
+                  <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Reimbursement</div>, true)}
+                     {selectedUnis.map(uni => renderCell(
+                        <div className="flex flex-col gap-2">
+                           <span className="text-sm font-bold flex items-center gap-1">
+                              {uni.state === 'Telangana' ? 'ePASS' : 'JVD'} Eligible <CheckCircle2 size={12} className="text-green-500" />
+                           </span>
+                           <Link href={`/scholarships?type=State`} className="text-[10px] font-bold text-secondary-purple underline">
+                              Check Eligibility
+                           </Link>
+                        </div>
+                     ))}
+                  </div>
+                  
+                  {/* --- SECTION 5: OUTCOMES --- */}
+                  <div className="bg-slate-50/50 dark:bg-slate-900/50 py-2 px-4 text-xs font-black uppercase text-slate-400 tracking-widest sticky left-0 mt-4">Outcomes</div>
+
+                   <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Placement Grade</div>, true)}
+                     {selectedUnis.map(uni => {
+                        const grade = uni.naacGrade.includes('A') ? 'High' : 'Medium';
+                        return renderCell(<span className="text-sm font-bold">{grade} ({uni.naacGrade})</span>);
+                     })}
+                  </div>
+                   <div className="flex border-b border-slate-100 dark:border-slate-800">
+                     {renderCell(<div className="font-bold text-xs text-slate-600 dark:text-slate-300">Type</div>, true)}
+                     {selectedUnis.map(uni => renderCell(<span className="text-sm font-medium">{uni.type}</span>))}
+                  </div>
+
+               </div>
+            </div>
+
+            {/* 6. SMART INSIGHTS SECTION */}
+            <div className="px-4 mb-8">
+               <div className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
+                  <div className="relative z-10">
+                     <div className="flex items-center gap-2 mb-4">
+                        <Sparkles className="text-yellow-400" size={20} />
+                        <h3 className="font-black text-lg">Our Analysis</h3>
+                     </div>
+                     <div className="space-y-3">
+                        {lowestFeeId && (
+                           <div className="flex items-start gap-3 text-sm">
+                              <CheckCircle2 className="text-green-400 shrink-0 mt-0.5" size={16} />
+                              <p><span className="font-bold text-green-300">Choose {selectedUnis.find(u => u.id === lowestFeeId)?.name}</span> if budget is your main priority. It has the most affordable tuition.</p>
+                           </div>
+                        )}
+                        {bestPlacementId && bestPlacementId !== lowestFeeId && (
+                           <div className="flex items-start gap-3 text-sm">
+                              <CheckCircle2 className="text-blue-400 shrink-0 mt-0.5" size={16} />
+                              <p><span className="font-bold text-blue-300">Choose {selectedUnis.find(u => u.id === bestPlacementId)?.name}</span> for better campus facilities and placement track record (NAAC Score).</p>
+                           </div>
+                        )}
+                        <div className="flex items-start gap-3 text-sm">
+                           <Info className="text-slate-400 shrink-0 mt-0.5" size={16} />
+                           <p className="text-slate-300 text-xs">This advice is based on official data points like fees and NAAC accreditation. Always visit the campus before deciding.</p>
+                        </div>
+                     </div>
+                  </div>
+                  {/* Decorative */}
+                  <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-primary-teal rounded-full blur-[60px] opacity-30"></div>
+               </div>
+            </div>
+
+            {/* ETHICAL MONETIZATION: CONTEXTUAL PARTNERS */}
+            <div className="px-4 mb-24">
+               <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-white dark:bg-slate-900">
+                  <div className="flex justify-between items-center mb-3">
+                     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Education Partners</span>
+                     <span className="bg-slate-100 dark:bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-500">Sponsored</span>
+                  </div>
+                  <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                     <div className="min-w-[200px] p-3 bg-secondary-purple/5 rounded-xl border border-secondary-purple/10">
+                        <h4 className="font-bold text-sm text-secondary-purple mb-1">Scholarship Search</h4>
+                        <p className="text-xs text-slate-500 mb-2">Find private grants matching your profile.</p>
+                        <Link href="/scholarships" className="text-xs font-bold underline decoration-dotted">View Options</Link>
+                     </div>
+                     <div className="min-w-[200px] p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800">
+                        <h4 className="font-bold text-sm text-blue-600 mb-1">Education Loan</h4>
+                        <p className="text-xs text-slate-500 mb-2">Low interest rates for engineering.</p>
+                        <span className="text-xs font-bold underline decoration-dotted text-blue-500 cursor-pointer">Check Eligibility</span>
+                     </div>
+                  </div>
                </div>
             </div>
          </div>
       )}
+
+      {/* 7. STICKY BOTTOM ACTIONS */}
+      {selectedIds.length > 0 && (
+         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-40 safe-pb shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div className="max-w-7xl mx-auto flex gap-3">
+               <Link 
+                  href={`/universities/${selectedIds[0]}`}
+                  className="flex-1 py-3.5 rounded-xl font-bold text-sm text-center border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+               >
+                  View {selectedUnis[0]?.name.split(' ')[0]}
+               </Link>
+               <button 
+                  onClick={() => router.push('/saved')}
+                  className="flex-1 bg-primary-teal text-white py-3.5 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-transform"
+               >
+                  Save Final Choice
+               </button>
+            </div>
+         </div>
+      )}
+
     </div>
   );
-}
+};
 
 export default function ComparePage() {
   return (

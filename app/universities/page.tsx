@@ -30,7 +30,7 @@ export default function UniversitiesPage() {
   const [savedUniversities, setSavedUniversities] = useState<string[]>([]);
 
   useEffect(() => {
-    const q = searchParams.get('q');
+    const q = searchParams?.get('q');
     if (q) {
       if (['Engineering', 'Medicine', 'Law'].includes(q)) setFilterStream(q);
       else setSearch(q);

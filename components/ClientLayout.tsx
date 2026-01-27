@@ -49,7 +49,7 @@ const Navbar = () => {
     { name: 'Universities', path: '/universities', icon: <GraduationCap size={18} /> },
     { name: 'Exams', path: '/exams', icon: <FileText size={18} /> },
     { name: 'Scholarships', path: '/scholarships', icon: <Gift size={18} /> },
-    { name: 'Tools', path: '/tools', icon: <Calculator size={18} /> },
+    { name: 'Tools', path: '/tools', icon: <LayoutGrid size={18} /> },
   ];
 
   return (
@@ -203,53 +203,52 @@ const BottomNav = () => {
 };
 
 const Footer = () => (
-  <footer className="mt-auto border-t py-12 bg-slate-900 border-slate-800 text-slate-400 mb-20 md:mb-0">
-    <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+  <footer className="mt-auto border-t py-12 bg-slate-950 border-slate-800 text-slate-400 mb-20 md:mb-0">
+    <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
       <div className="col-span-1 md:col-span-1">
-        <div className="flex items-center space-x-2 mb-4">
-          <div className="bg-primary-teal p-1 rounded text-white">
-            <GraduationCap size={20} />
+        <div className="flex items-center space-x-2 mb-6">
+          <div className="bg-primary-teal p-1.5 rounded-lg text-white">
+            <GraduationCap size={24} />
           </div>
-          <span className="font-bold text-lg text-white">After Inter</span>
+          <span className="font-bold text-xl text-white">AfterInter</span>
         </div>
-        <p className="text-sm">Empowering students in Telangana and Andhra Pradesh with verified education discovery tools and data.</p>
-        <div className="mt-6 flex flex-col gap-2">
-           <Link href="/about" className="text-sm hover:text-white transition-colors">About Us</Link>
-           <Link href="/contact" className="text-sm hover:text-white transition-colors">Contact Support</Link>
+        <p className="text-sm leading-relaxed mb-6">Empowering intermediate students in Telangana and Andhra Pradesh with verified education discovery tools, counseling updates, and scholarship data.</p>
+        <div className="flex gap-4">
+           {/* Social links could go here */}
         </div>
       </div>
       <div>
-        <h4 className="font-bold text-white mb-4">Quick Links</h4>
-        <ul className="space-y-2 text-sm">
-          <li><Link href="/universities" className="hover:text-primary-teal">Universities</Link></li>
-          <li><Link href="/exams" className="hover:text-primary-teal">Entrance Exams</Link></li>
-          <li><Link href="/scholarships" className="hover:text-primary-teal">Scholarships</Link></li>
-          <li><Link href="/saved" className="hover:text-primary-teal">My Saved List</Link></li>
+        <h4 className="font-black text-white uppercase text-xs tracking-widest mb-6">Resources</h4>
+        <ul className="space-y-4 text-sm font-medium">
+          <li><Link href="/universities" className="hover:text-primary-teal transition-colors">College Directory</Link></li>
+          <li><Link href="/exams" className="hover:text-primary-teal transition-colors">Entrance Exams</Link></li>
+          <li><Link href="/scholarships" className="hover:text-primary-teal transition-colors">Scholarship Finder</Link></li>
+          <li><Link href="/tools" className="hover:text-primary-teal transition-colors">Admission Tools</Link></li>
         </ul>
       </div>
       <div>
-        <h4 className="font-bold text-white mb-4">Legal</h4>
-        <ul className="space-y-2 text-sm">
-          <li><Link href="/privacy" className="hover:text-primary-teal">Privacy Policy</Link></li>
-          <li><Link href="/terms" className="hover:text-primary-teal">Terms & Conditions</Link></li>
-          <li><Link href="/disclaimer" className="hover:text-primary-teal">Disclaimer</Link></li>
+        <h4 className="font-black text-white uppercase text-xs tracking-widest mb-6">Company</h4>
+        <ul className="space-y-4 text-sm font-medium">
+          <li><Link href="/about" className="hover:text-primary-teal transition-colors">About Us</Link></li>
+          <li><Link href="/contact" className="hover:text-primary-teal transition-colors">Contact Support</Link></li>
+          <li><Link href="/saved" className="hover:text-primary-teal transition-colors">My Shortlist</Link></li>
         </ul>
       </div>
       <div>
-        <h4 className="font-bold text-white mb-4">Contact</h4>
-        <ul className="space-y-2 text-sm">
-          <li>Email: support@afterinter.com</li>
-          <li>Location: Hyderabad / Vijayawada</li>
+        <h4 className="font-black text-white uppercase text-xs tracking-widest mb-6">Legal</h4>
+        <ul className="space-y-4 text-sm font-medium">
+          <li><Link href="/privacy-policy" className="hover:text-primary-teal transition-colors">Privacy Policy</Link></li>
+          <li><Link href="/terms" className="hover:text-primary-teal transition-colors">Terms & Conditions</Link></li>
+          <li><Link href="/disclaimer" className="hover:text-primary-teal transition-colors">Disclaimer</Link></li>
         </ul>
       </div>
     </div>
     
-    <div className="max-w-7xl mx-auto px-4 mt-8">
-       <AdSense slot="1234567890" label="Sponsor" />
-    </div>
-
-    <div className="max-w-7xl mx-auto px-4 pt-8 mt-4 border-t border-slate-800 text-center text-xs">
-      © 2025 After Inter. Official University & Scholarship Websites Only.
+    <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-slate-800 text-center">
+       <p className="text-xs text-slate-500 mb-4 tracking-wide">© 2025 AfterInter. Content is for guidance only. Verify with official TSCHE/APSCHE portals.</p>
+       <div className="flex justify-center">
+          <AdSense slot="1234567890" label="Sponsor" />
+       </div>
     </div>
   </footer>
 );

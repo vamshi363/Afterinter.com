@@ -5,7 +5,8 @@ import { Award, ChevronRight, Globe, FileText, CheckCircle2, Info, AlertCircle, 
 import { motion } from 'framer-motion';
 
 const ScholarshipDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params?.id as string;
   const scholar = scholarships.find(s => s.id === id);
 
   if (!scholar) return <div className="p-20 text-center">Scholarship not found</div>;

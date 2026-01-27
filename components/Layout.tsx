@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Navbar Component
 const Navbar = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const [savedCount, setSavedCount] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -15,10 +14,8 @@ const Navbar = () => {
 
   useEffect(() => {
     const updateCount = () => {
-      if (typeof window !== 'undefined') {
-        const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
-        setSavedCount(saved.length);
-      }
+      const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
+      setSavedCount(saved.length);
     };
     updateCount();
     window.addEventListener('favorites-updated', updateCount);
@@ -146,12 +143,11 @@ const Navbar = () => {
 
 // BottomNav Component
 const BottomNav = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
+  const { pathname } = useLocation();
 
   const shouldHide = 
-    (pathname.startsWith('/universities/') && pathname !== '/universities') ||
-    (pathname.startsWith('/exams/') && pathname !== '/exams');
+    (pathname?.startsWith('/universities/') && pathname !== '/universities') ||
+    (pathname?.startsWith('/exams/') && pathname !== '/exams');
 
   if (shouldHide) return null;
 
@@ -167,7 +163,7 @@ const BottomNav = () => {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pb-safe md:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
       <div className="flex justify-between items-center h-[60px] px-2 max-w-md mx-auto">
         {tabs.map((tab) => {
-          const isActive = pathname === tab.path || (tab.path !== '/' && pathname.startsWith(tab.path));
+          const isActive = pathname === tab.path || (tab.path !== '/' && pathname?.startsWith(tab.path));
           
           return (
             <Link 

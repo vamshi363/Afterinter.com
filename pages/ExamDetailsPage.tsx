@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { exams } from '../data/exams';
@@ -11,7 +12,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ExamDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params?.id as string;
   const exam = exams.find(e => e.id === id);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -250,111 +252,50 @@ const ExamDetailsPage: React.FC = () => {
                <div className="relative z-10 mb-8">
                   <div className="flex items-start gap-3">
                      <div className="p-2 bg-primary-teal/20 rounded-lg text-primary-teal">
-                        <Sparkles size={18} />
+                        <BrainCircuit size={20} />
                      </div>
                      <div>
-                        <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-2">Expert Strategy</h3>
-                        <p className="text-sm font-medium leading-relaxed text-slate-100">
+                        <h4 className="font-bold text-base mb-1 text-white">Pro Strategy</h4>
+                        <p className="text-sm text-slate-300 leading-relaxed font-medium">
                            {exam.prepTips}
                         </p>
                      </div>
                   </div>
                </div>
 
-               {/* Action Grid */}
-               <div className="grid grid-cols-2 gap-3 relative z-10 mb-6">
+               {/* Resources Grid */}
+               <div className="grid grid-cols-2 gap-3 relative z-10">
                   <a 
-                    href={`https://www.google.com/search?q=${encodeURIComponent(exam.name + ' syllabus pdf ' + new Date().getFullYear())}`}
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exam.name + ' previous year papers analysis')}`} 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group"
+                    className="flex items-center gap-3 p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors group"
                   >
-                     <Download size={20} className="text-slate-300 group-hover:text-primary-teal transition-colors" />
-                     <span className="text-xs font-bold text-slate-300">Syllabus</span>
-                  </a>
-                  <a 
-                    href={`https://www.google.com/search?q=${encodeURIComponent(exam.name + ' previous year question papers pdf')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group"
-                  >
-                     <FileText size={20} className="text-slate-300 group-hover:text-primary-teal transition-colors" />
-                     <span className="text-xs font-bold text-slate-300">PYQ Papers</span>
-                  </a>
-                  <a 
-                     href={`https://www.google.com/search?q=${encodeURIComponent(exam.name + ' free mock test online')}`}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group"
-                  >
-                     <Timer size={20} className="text-slate-300 group-hover:text-primary-teal transition-colors" />
-                     <span className="text-xs font-bold text-slate-300">Mock Tests</span>
-                  </a>
-                  <Link 
-                     to="/help"
-                     className="flex flex-col items-center justify-center gap-2 p-4 bg-gradient-to-br from-primary-teal/20 to-primary-teal/5 hover:from-primary-teal/30 hover:to-primary-teal/10 border border-primary-teal/20 rounded-2xl transition-all group"
-                  >
-                     <BrainCircuit size={20} className="text-primary-teal" />
-                     <span className="text-xs font-bold text-primary-teal">AI Study Plan</span>
-                  </Link>
-               </div>
-
-               {/* Bottom Note */}
-               <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/5">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Powered by AI Analysis</span>
-                  <Link to="/help" className="text-xs font-bold text-white hover:text-primary-teal flex items-center gap-1 transition-colors">
-                     Ask a doubt <ChevronRight size={12} />
-                  </Link>
-               </div>
-
-               {/* Background Decorative */}
-               <div className="absolute top-0 right-0 w-64 h-64 bg-primary-teal rounded-full blur-[80px] opacity-10 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-               <div className="absolute bottom-0 left-0 w-40 h-40 bg-secondary-purple rounded-full blur-[60px] opacity-10 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-            </div>
-         </section>
-
-         {/* --- 6. ACCEPTING COLLEGES --- */}
-         <section className="mb-24">
-            <div className="flex justify-between items-center mb-4">
-               <div className="flex items-center gap-2">
-                  <School className="text-primary-teal" size={20} />
-                  <h2 className="text-lg font-black text-slate-900 dark:text-white">Top Accepting Colleges</h2>
-               </div>
-               <Link to={`/universities?q=${encodeURIComponent(exam.name)}`} className="text-xs font-bold text-primary-teal hover:underline flex items-center">
-                  View All <ArrowRight size={12} className="ml-1" />
-               </Link>
-            </div>
-            
-            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4">
-               {exam.colleges.map((college, idx) => (
-                  <div key={idx} className="min-w-[220px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col justify-between hover:border-primary-teal transition-colors">
-                     <div>
-                        <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 font-black text-sm mb-3">
-                           {college.charAt(0)}
-                        </div>
-                        <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-1 line-clamp-2">{college}</h4>
-                        <div className="flex items-center text-xs text-slate-500">
-                           <MapPin size={10} className="mr-1" /> Location varies
-                        </div>
+                     <div className="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+                        <Youtube size={16} />
                      </div>
-                     <Link to={`/universities?q=${encodeURIComponent(college)}`} className="mt-4 text-xs font-bold text-primary-teal flex items-center">
-                        View Details <ArrowRight size={10} className="ml-1" />
-                     </Link>
-                  </div>
-               ))}
-               <Link to={`/universities?q=${encodeURIComponent(exam.name)}`} className="min-w-[100px] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-400 hover:text-primary-teal hover:border-primary-teal transition-colors group">
-                  <div className="w-10 h-10 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
-                     <ArrowRight size={16} />
-                  </div>
-                  <span className="text-[10px] font-bold">See All</span>
-               </Link>
+                     <span className="text-xs font-bold text-slate-200 group-hover:text-white">Video Analysis</span>
+                  </a>
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-3 p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors group"
+                  >
+                     <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                        <Download size={16} />
+                     </div>
+                     <span className="text-xs font-bold text-slate-200 group-hover:text-white">Syllabus PDF</span>
+                  </a>
+               </div>
+
+               {/* Decor */}
+               <div className="absolute top-0 right-0 w-32 h-32 bg-primary-teal/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
             </div>
          </section>
 
       </div>
 
-      {/* --- 7. STICKY ACTION BAR --- */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-40 safe-pb shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      {/* --- 6. STICKY ACTION BAR --- */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-50 safe-pb shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
          <div className="max-w-3xl mx-auto flex gap-3">
             <a 
               href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exam.name + ' exam preparation')}`}
@@ -376,6 +317,7 @@ const ExamDetailsPage: React.FC = () => {
             </a>
          </div>
       </div>
+
     </div>
   );
 };

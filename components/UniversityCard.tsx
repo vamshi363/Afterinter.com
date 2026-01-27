@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { University } from '../types';
 import { MapPin, Building2, IndianRupee, BookOpen, Heart, CheckCircle2, ArrowRight, FileText, Shield, UserCheck, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -228,7 +230,7 @@ export const UniversityCard: React.FC<UniversityCardProps> = ({ uni, isSaved: pr
 
       <div className="p-5 pt-0 mt-auto grid grid-cols-[1fr,auto] gap-3">
         <Link 
-          to={`/universities/${uni.id}`}
+          href={`/universities/${uni.id}`}
           className="flex items-center justify-center gap-2 h-12 bg-primary-teal hover:bg-teal-600 active:bg-teal-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-primary-teal/20 text-sm group/btn"
         >
           <span>View Details</span>

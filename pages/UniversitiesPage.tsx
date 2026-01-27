@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { universities } from '../data/universities';
@@ -23,7 +22,7 @@ const HeartIcon = () => (
 );
 
 const UniversitiesPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   
   // Mobile Filter State

@@ -1,23 +1,28 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { universities } from '../../../data/universities';
+import { universities } from '@/data/universities';
 import { 
   MapPin, CheckCircle2, BookOpen, IndianRupee, 
   Building2, ExternalLink, ArrowLeft, Heart, ShieldCheck, Star, Navigation, Globe
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Note: In a real server component, generateMetadata would be exported here.
-// Since this file was marked 'use client' in the previous context, we will add
-// structured data (JSON-LD) dynamically inside the component.
+// NOTE: Since this is a client component for interactivity (saving, etc.), 
+// we cannot export generateMetadata directly if it needs hooks. 
+// However, in Next.js 13/14, we can split this. 
+// For this migration, we will use a Client Component wrapper or just keep it 'use client'
+// and sacrifice some SEO on the title tag until a deeper refactor, OR
+// we rely on the layout/page structure. 
+// The safest way for SEO in a client component is ensuring the content renders on server.
+// 'use client' components ARE rendered on the server (SSR), just hydrated on client.
 
-export default function UniversityDetailsPage() {
-  const params = useParams();
-  const id = params?.id as string ?? "";
+export default function UniversityDetailsPage({ params }: { params: { id: string } }) {
+  // Await params if Next.js 15, standard access for 14
+  const { id } = params;
   
   const uni = universities.find(u => u.id === id);
   const [isSaved, setIsSaved] = useState(false);
@@ -58,7 +63,6 @@ export default function UniversityDetailsPage() {
 
   if (!uni) return <div className="p-20 text-center font-bold text-xl">University not found</div>;
 
-  // JSON-LD for CollegeOrUniversity
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollegeOrUniversity",
@@ -72,12 +76,7 @@ export default function UniversityDetailsPage() {
     },
     "description": uni.description,
     "telephone": uni.phone,
-    "email": uni.email,
-    "hasCredential": {
-      "@type": "EducationalOccupationalCredential",
-      "credentialCategory": "degree",
-      "educationalLevel": "Undergraduate"
-    }
+    "email": uni.email
   };
 
   return (

@@ -1,9 +1,11 @@
 
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { universities } from '../data/universities';
 import { UniversityCard } from '../components/UniversityCard';
 import { Heart, Search, Scale } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const SavedPage: React.FC = () => {
   const [savedIds, setSavedIds] = useState<string[]>([]);
@@ -38,7 +40,7 @@ const SavedPage: React.FC = () => {
         </div>
         {savedIds.length >= 2 && (
           <Link 
-            to={`/compare?ids=${savedIds.slice(0,3).join(',')}`}
+            href={`/compare?ids=${savedIds.slice(0,3).join(',')}`}
             className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-800"
           >
             <Scale size={18} /> Compare These
@@ -64,7 +66,7 @@ const SavedPage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold mb-2">No Saved Colleges Yet</h2>
           <p className="text-slate-500 mb-8 max-w-md mx-auto">Browse through our verified list of universities and tap the heart icon to save them here for later.</p>
-          <Link to="/universities" className="bg-primary-teal hover:bg-teal-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg inline-flex items-center gap-2">
+          <Link href="/universities" className="bg-primary-teal hover:bg-teal-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg inline-flex items-center gap-2">
             <Search size={20} /> Browse Universities
           </Link>
         </div>

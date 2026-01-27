@@ -1,7 +1,10 @@
+
+'use client';
+
 import React from 'react';
 import { Bot, Home, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const HelpPage: React.FC = () => {
   return (
@@ -56,7 +59,7 @@ const HelpPage: React.FC = () => {
 
             {/* Return Action */}
             <Link 
-              to="/" 
+              href="/" 
               className="inline-flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-4 rounded-2xl font-bold transition-all hover:scale-105 shadow-xl hover:shadow-2xl"
             >
               <Home size={20} />

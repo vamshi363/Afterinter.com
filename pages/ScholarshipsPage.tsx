@@ -1,8 +1,10 @@
 
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { scholarships } from '../data/scholarships';
 import { Search, Award, Calendar, CheckCircle2, ChevronRight, Filter, IndianRupee } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const ScholarshipsPage: React.FC = () => {
@@ -25,7 +27,6 @@ const ScholarshipsPage: React.FC = () => {
         <p className="text-slate-500 max-w-2xl">Browse verified State, Central and Private scholarships for students of Telangana and Andhra Pradesh.</p>
       </div>
 
-      {/* Search and Quick Filters */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
         <div className="md:col-span-2 relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -81,7 +82,7 @@ const ScholarshipsPage: React.FC = () => {
               </div>
 
               <div className="flex gap-2">
-                <Link to={`/scholarships/${scholar.id}`} className="flex-grow py-4 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl font-bold text-center transition-all">
+                <Link href={`/scholarships/${scholar.id}`} className="flex-grow py-4 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl font-bold text-center transition-all">
                   Details
                 </Link>
                 <a href={scholar.applyLink} target="_blank" rel="noopener noreferrer" className="flex-grow py-4 bg-secondary-purple hover:bg-purple-700 text-white rounded-2xl font-bold text-center transition-all shadow-md">
@@ -90,7 +91,6 @@ const ScholarshipsPage: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Injected AdSense Placeholder every 3 items */}
             {(idx + 1) % 3 === 0 && (
               <div className="col-span-1 md:col-span-2 lg:col-span-3 py-4 flex justify-center">
                  <div className="w-full max-w-2xl h-32 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-slate-300">
@@ -111,7 +111,6 @@ const ScholarshipsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Info Section */}
       <div className="mt-20 p-12 bg-slate-900 rounded-[3rem] text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
@@ -129,7 +128,7 @@ const ScholarshipsPage: React.FC = () => {
           <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 backdrop-blur-md">
             <h4 className="font-bold mb-4 text-primary-teal uppercase tracking-widest text-xs">AI Assistance Available</h4>
             <p className="text-sm mb-6">Not sure which scholarship you're eligible for? Our AI Advisor can analyze your profile.</p>
-            <Link to="/help" className="block text-center py-3 bg-white text-slate-900 rounded-xl font-bold hover:bg-slate-200 transition-all">Try AI Matcher</Link>
+            <Link href="/help" className="block text-center py-3 bg-white text-slate-900 rounded-xl font-bold hover:bg-slate-200 transition-all">Try AI Matcher</Link>
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 
+'use client';
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -6,7 +8,8 @@ import {
   DollarSign, MapPin, BrainCircuit, ShieldCheck, School, Sparkles, 
   Loader2, TrendingUp, AlertCircle, Compass, Play, BarChart3, Stethoscope, FlaskConical
 } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { exams } from '../data/exams';
 
 interface QuizState {
@@ -20,7 +23,7 @@ interface QuizState {
 type QuizStatus = 'intro' | 'active' | 'analyzing' | 'results';
 
 const ExamFinderPage: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [status, setStatus] = useState<QuizStatus>('intro');
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState<QuizState>({
@@ -61,7 +64,6 @@ const ExamFinderPage: React.FC = () => {
     if (status !== 'results') return { recommended: [], backups: [] };
 
     // 1. Precise Filtering based on Course Content
-    // This fixes the issue where NEET (Government category) appeared in Engineering
     let filtered = exams.filter(e => {
       const courseStr = e.courses.join(' ').toLowerCase();
       const examName = e.name.toLowerCase();
@@ -273,7 +275,7 @@ const ExamFinderPage: React.FC = () => {
                  >
                     <Play size={20} fill="currentColor" /> Start Quiz
                  </button>
-                 <button onClick={() => navigate(-1)} className="text-slate-400 font-bold text-sm hover:text-slate-600">
+                 <button onClick={() => router.back()} className="text-slate-400 font-bold text-sm hover:text-slate-600">
                     Go Back
                  </button>
               </div>
@@ -378,10 +380,10 @@ const ExamFinderPage: React.FC = () => {
                   </div>
 
                   <div className="flex gap-3">
-                     <Link to={`/exams/${exam.id}`} className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold text-sm text-center shadow-lg hover:scale-[1.02] transition-transform">
+                     <Link href={`/exams/${exam.id}`} className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold text-sm text-center shadow-lg hover:scale-[1.02] transition-transform">
                         View Exam Details
                      </Link>
-                     <Link to={`/universities?q=${encodeURIComponent(exam.name)}`} className="px-4 py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors">
+                     <Link href={`/universities?q=${encodeURIComponent(exam.name)}`} className="px-4 py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors">
                         Colleges
                      </Link>
                   </div>
@@ -407,7 +409,7 @@ const ExamFinderPage: React.FC = () => {
                <h3 className="font-bold text-slate-400 uppercase tracking-widest text-center text-xs mb-4">Good Safety Options</h3>
                <div className="space-y-3">
                  {results.backups.map(exam => (
-                   <Link to={`/exams/${exam.id}`} key={exam.id} className="block bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex justify-between items-center hover:border-slate-300 transition-colors shadow-sm">
+                   <Link href={`/exams/${exam.id}`} key={exam.id} className="block bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex justify-between items-center hover:border-slate-300 transition-colors shadow-sm">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-xs">
                            {exam.name[0]}
@@ -432,7 +434,7 @@ const ExamFinderPage: React.FC = () => {
              >
                <RotateCcw size={16} /> Retake Quiz
              </button>
-             <Link to="/help" className="flex-1 py-4 text-primary-teal font-bold text-sm flex items-center justify-center gap-2 hover:text-teal-700">
+             <Link href="/help" className="flex-1 py-4 text-primary-teal font-bold text-sm flex items-center justify-center gap-2 hover:text-teal-700">
                Ask AI for More Help
              </Link>
           </div>
@@ -455,7 +457,7 @@ const ExamFinderPage: React.FC = () => {
 
        {/* Top Nav */}
        <div className="p-4 pt-6 flex justify-between items-center">
-         <button onClick={() => navigate(-1)} className="text-slate-400 hover:text-slate-600 font-bold text-sm flex items-center">
+         <button onClick={() => router.back()} className="text-slate-400 hover:text-slate-600 font-bold text-sm flex items-center">
             Close
          </button>
          <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 dark:bg-slate-900 px-3 py-1 rounded-full">

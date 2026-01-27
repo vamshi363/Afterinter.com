@@ -1,10 +1,13 @@
+
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { 
   GraduationCap, Globe, Palette, Briefcase, Building2, 
   School, Compass, ArrowRight, Calendar, AlertCircle, 
   Stethoscope, Gavel, FlaskConical, Filter
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { exams } from '../data/exams';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -135,7 +138,7 @@ const ExamsPage: React.FC = () => {
                 <p className="text-xs text-slate-500 font-medium">Gateway to your dream college</p>
              </div>
              <div className="flex gap-2">
-                <Link to="/exam-finder" className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 hover:text-primary-teal hover:bg-teal-50 transition-colors">
+                <Link href="/exam-finder" className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400 hover:text-primary-teal hover:bg-teal-50 transition-colors">
                     <Compass size={24} />
                 </Link>
                 <button 
@@ -188,7 +191,7 @@ const ExamsPage: React.FC = () => {
       <div className="max-w-3xl mx-auto px-4 py-6">
         
         {/* Exam Finder Banner */}
-        <Link to="/exam-finder" className="mb-8 block group relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white shadow-xl shadow-blue-500/20">
+        <Link href="/exam-finder" className="mb-8 block group relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white shadow-xl shadow-blue-500/20">
            <div className="relative z-10 flex items-center justify-between">
               <div>
                  <div className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-widest mb-2 border border-white/10">
@@ -230,7 +233,7 @@ const ExamsPage: React.FC = () => {
                           {exam.name.charAt(0)}
                        </div>
                        <div>
-                          <Link to={`/exams/${exam.id}`} className="text-lg font-black text-slate-900 dark:text-white hover:text-primary-teal transition-colors line-clamp-1">
+                          <Link href={`/exams/${exam.id}`} className="text-lg font-black text-slate-900 dark:text-white hover:text-primary-teal transition-colors line-clamp-1">
                              {exam.name}
                           </Link>
                           <div className="flex items-center gap-2 mt-1">
@@ -274,7 +277,7 @@ const ExamsPage: React.FC = () => {
                         <span>Exam Date: <span className="text-slate-900 dark:text-white">{exam.date}</span></span>
                      </div>
                      <Link 
-                        to={`/exams/${exam.id}`} 
+                        href={`/exams/${exam.id}`} 
                         className="flex items-center gap-1 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-slate-900/10"
                      >
                         Details <ArrowRight size={12} />

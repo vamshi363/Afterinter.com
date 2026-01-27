@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { exams } from '../data/exams';
 import { 
   ArrowLeft, ExternalLink, Calendar, CheckCircle2, School, 
@@ -11,7 +12,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ExamDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params?.id as string;
   const exam = exams.find(e => e.id === id);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -80,7 +82,7 @@ const ExamDetailsPage: React.FC = () => {
          <div className="relative z-10 px-4 pt-4 pb-8 max-w-3xl mx-auto">
             {/* Top Nav */}
             <div className="flex justify-between items-center mb-8">
-               <Link to="/exams" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors backdrop-blur-md">
+               <Link href="/exams" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors backdrop-blur-md">
                   <ArrowLeft size={20} className="text-white" />
                </Link>
                <div className="flex gap-3">
@@ -291,7 +293,7 @@ const ExamDetailsPage: React.FC = () => {
                      <span className="text-xs font-bold text-slate-300">Mock Tests</span>
                   </a>
                   <Link 
-                     to="/help"
+                     href="/help"
                      className="flex flex-col items-center justify-center gap-2 p-4 bg-gradient-to-br from-primary-teal/20 to-primary-teal/5 hover:from-primary-teal/30 hover:to-primary-teal/10 border border-primary-teal/20 rounded-2xl transition-all group"
                   >
                      <BrainCircuit size={20} className="text-primary-teal" />
@@ -302,7 +304,7 @@ const ExamDetailsPage: React.FC = () => {
                {/* Bottom Note */}
                <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/5">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Powered by AI Analysis</span>
-                  <Link to="/help" className="text-xs font-bold text-white hover:text-primary-teal flex items-center gap-1 transition-colors">
+                  <Link href="/help" className="text-xs font-bold text-white hover:text-primary-teal flex items-center gap-1 transition-colors">
                      Ask a doubt <ChevronRight size={12} />
                   </Link>
                </div>
@@ -320,7 +322,7 @@ const ExamDetailsPage: React.FC = () => {
                   <School className="text-primary-teal" size={20} />
                   <h2 className="text-lg font-black text-slate-900 dark:text-white">Top Accepting Colleges</h2>
                </div>
-               <Link to={`/universities?q=${encodeURIComponent(exam.name)}`} className="text-xs font-bold text-primary-teal hover:underline flex items-center">
+               <Link href={`/universities?q=${encodeURIComponent(exam.name)}`} className="text-xs font-bold text-primary-teal hover:underline flex items-center">
                   View All <ArrowRight size={12} className="ml-1" />
                </Link>
             </div>
@@ -337,12 +339,12 @@ const ExamDetailsPage: React.FC = () => {
                            <MapPin size={10} className="mr-1" /> Location varies
                         </div>
                      </div>
-                     <Link to={`/universities?q=${encodeURIComponent(college)}`} className="mt-4 text-xs font-bold text-primary-teal flex items-center">
+                     <Link href={`/universities?q=${encodeURIComponent(college)}`} className="mt-4 text-xs font-bold text-primary-teal flex items-center">
                         View Details <ArrowRight size={10} className="ml-1" />
                      </Link>
                   </div>
                ))}
-               <Link to={`/universities?q=${encodeURIComponent(exam.name)}`} className="min-w-[100px] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-400 hover:text-primary-teal hover:border-primary-teal transition-colors group">
+               <Link href={`/universities?q=${encodeURIComponent(exam.name)}`} className="min-w-[100px] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-400 hover:text-primary-teal hover:border-primary-teal transition-colors group">
                   <div className="w-10 h-10 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center mb-2 shadow-sm group-hover:scale-110 transition-transform">
                      <ArrowRight size={16} />
                   </div>

@@ -1,18 +1,20 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { scholarships } from '../data/scholarships';
 import { Award, ChevronRight, Globe, FileText, CheckCircle2, Info, AlertCircle, Calendar, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ScholarshipDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params?.id as string;
   const scholar = scholarships.find(s => s.id === id);
 
   if (!scholar) return <div className="p-20 text-center">Scholarship not found</div>;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <Link to="/scholarships" className="inline-flex items-center text-primary-teal font-bold mb-8 hover:underline">
+      <Link href="/scholarships" className="inline-flex items-center text-primary-teal font-bold mb-8 hover:underline">
         <ArrowLeft size={18} className="mr-2" /> Back to Scholarships
       </Link>
 

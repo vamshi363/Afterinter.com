@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { universities } from '../data/universities';
 import { scholarships } from '../data/scholarships';
 import { Course } from '../types';
@@ -14,7 +15,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const UniversityDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params?.id as string;
   const uni = universities.find(u => u.id === id);
   
   const [isSaved, setIsSaved] = useState(false);
@@ -24,19 +26,15 @@ const UniversityDetailsPage: React.FC = () => {
   const [showImageSheet, setShowImageSheet] = useState(false); // Map Sheet
   const [showPhotoOptions, setShowPhotoOptions] = useState(false); // New Photo Choice Modal
   
-  // Map View State: 'm' = Map, 'k' = Satellite, 'h' = Hybrid, 'street' = Street View (simulated via layer=c)
   const [mapViewMode, setMapViewMode] = useState<'m' | 'k' | 'h' | 'street'>('m');
 
-  // Predictor State
   const [predRank, setPredRank] = useState('');
   const [predCategory, setPredCategory] = useState('OC');
   const [predGender, setPredGender] = useState('Male');
   const [showPredResults, setShowPredResults] = useState(false);
 
-  // Logo State
   const [logoError, setLogoError] = useState(false);
 
-  // Load Saved State
   useEffect(() => {
     if (id) {
       const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
@@ -44,7 +42,6 @@ const UniversityDetailsPage: React.FC = () => {
     }
   }, [id]);
 
-  // Handle Save Toggle
   const toggleSave = () => {
     if (!id) return;
     const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
@@ -59,11 +56,9 @@ const UniversityDetailsPage: React.FC = () => {
       setTimeout(() => setShowToast(false), 2000);
     }
     localStorage.setItem('tsap_saved_unis', JSON.stringify(newSaved));
-    // Dispatch event for bottom nav
     window.dispatchEvent(new Event('favorites-updated'));
   };
 
-  // Group Courses
   const groupedCourses = useMemo(() => {
     if (!uni) return {} as Record<string, Course[]>;
     return uni.courses.reduce<Record<string, Course[]>>((acc, course) => {
@@ -74,7 +69,6 @@ const UniversityDetailsPage: React.FC = () => {
     }, {});
   }, [uni]);
 
-  // Default Open First Accordion
   useEffect(() => {
     const levels = Object.keys(groupedCourses);
     if (levels.length > 0) {
@@ -88,13 +82,11 @@ const UniversityDetailsPage: React.FC = () => {
     setExpandedLevels(prev => ({ ...prev, [level]: !prev[level] }));
   };
 
-  // Prediction Calculation Logic
   const calculateProbability = (courseName: string) => {
     if (!predRank) return null;
     const rank = parseInt(predRank);
     const baseCutoff = uni.cutoffs[0]?.rank || 40000;
 
-    // Multipliers logic
     let branchMultiplier = 1.0;
     if (courseName.includes('CSE') || courseName.includes('Computer')) branchMultiplier = 1.0;
     else if (courseName.includes('ECE') || courseName.includes('IT')) branchMultiplier = 1.3;
@@ -117,19 +109,16 @@ const UniversityDetailsPage: React.FC = () => {
     return { label: 'Low', color: 'text-red-600', bg: 'bg-red-500', percent: 20 };
   };
 
-  // Relevant Scholarships
   const relevantScholarships = scholarships.filter(s => 
     s.type === 'Central' || 
     (uni.state === 'Telangana' && s.provider.includes('Telangana')) ||
     (uni.state === 'Andhra Pradesh' && s.provider.includes('Andhra'))
   ).slice(0, 3);
 
-  // URLs
   const mapsQuery = encodeURIComponent(uni.name + ' ' + uni.city);
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
   const imagesUrl = `https://www.google.com/search?tbm=isch&q=${mapsQuery}+campus+photos`;
   
-  // Dynamic Embed URL based on View Mode
   let embedMapsUrl = '';
   if (mapViewMode === 'street') {
      embedMapsUrl = `https://maps.google.com/maps?q=${mapsQuery}&layer=c&z=17&ie=UTF8&iwloc=A&output=embed`;
@@ -137,7 +126,6 @@ const UniversityDetailsPage: React.FC = () => {
      embedMapsUrl = `https://maps.google.com/maps?q=${mapsQuery}&t=${mapViewMode}&z=15&ie=UTF8&iwloc=A&output=embed`;
   }
 
-  // Generate Logo URL
   const getLogoUrl = () => {
     try {
       const domain = new URL(uni.website).hostname;
@@ -150,7 +138,6 @@ const UniversityDetailsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-32 font-sans selection:bg-primary-teal/20">
-      {/* Toast */}
       <AnimatePresence>
         {showToast && (
           <motion.div 
@@ -165,14 +152,13 @@ const UniversityDetailsPage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* --- 1. HEADER & IDENTITY --- */}
       <header className="relative bg-white dark:bg-slate-900 pt-6 pb-12 px-4 rounded-b-[2.5rem] shadow-sm border-b border-slate-100 dark:border-slate-800">
         <div className="flex justify-between items-center mb-6">
-           <Link to="/universities" className="inline-flex items-center text-slate-500 hover:text-primary-teal font-bold text-sm bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg transition-colors">
+           <Link href="/universities" className="inline-flex items-center text-slate-500 hover:text-primary-teal font-bold text-sm bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg transition-colors">
              <ArrowLeft size={16} className="mr-1" /> Back
            </Link>
            {isSaved && (
-              <Link to={`/compare?ids=${uni.id}`} className="inline-flex items-center text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors">
+              <Link href={`/compare?ids=${uni.id}`} className="inline-flex items-center text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors">
                  <Scale size={14} className="mr-1.5" /> Compare
               </Link>
            )}
@@ -193,7 +179,6 @@ const UniversityDetailsPage: React.FC = () => {
               )}
             </div>
 
-            {/* --- CAMPUS VIEW BUTTON (OPENS INTERNAL MAP SHEET) --- */}
             <button 
               onClick={() => { setShowImageSheet(true); setMapViewMode('m'); }}
               className="h-20 flex-1 max-w-[260px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl shadow-lg shadow-blue-500/30 flex flex-row items-center justify-center gap-3 transition-all hover:scale-[1.02] group relative overflow-hidden px-4"
@@ -221,7 +206,6 @@ const UniversityDetailsPage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-2 mb-4">
-             {/* Data Source Badge */}
              <div className="inline-flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg border border-blue-100 dark:border-blue-800">
                 <ShieldCheck size={14} />
                 <span className="text-[10px] font-black uppercase tracking-widest">Data Source: {uni.dataSource}</span>
@@ -237,7 +221,6 @@ const UniversityDetailsPage: React.FC = () => {
              )}
           </div>
 
-          {/* Reassurance Line */}
           <div className="flex items-center gap-2 text-xs font-medium text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100 w-full md:w-auto dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/50">
              <Shield size={14} className="fill-current" />
              <span>Officially recognized institution. Safe to apply.</span>
@@ -247,7 +230,6 @@ const UniversityDetailsPage: React.FC = () => {
 
       <div className="max-w-3xl mx-auto px-4 -mt-6 relative z-10 space-y-6">
         
-        {/* --- 2. QUICK SNAPSHOT (Grid) --- */}
         <div className="bg-white dark:bg-slate-900 rounded-[1.5rem] shadow-lg border border-slate-100 dark:border-slate-800 p-5">
            <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Quick Snapshot</h3>
            <div className="grid grid-cols-2 gap-y-6 gap-x-4">
@@ -290,7 +272,6 @@ const UniversityDetailsPage: React.FC = () => {
            </div>
         </div>
 
-        {/* --- 3. STUDENT VIDEOS & REVIEWS (COLLAPSIBLE BUTTON) --- */}
         <section>
            <button 
              onClick={() => setShowVideos(!showVideos)}
@@ -332,12 +313,10 @@ const UniversityDetailsPage: React.FC = () => {
                          rel="noopener noreferrer"
                          className="flex items-center gap-4 w-full p-4 bg-slate-50 hover:bg-red-50 dark:bg-slate-800 dark:hover:bg-slate-700/50 border border-slate-100 dark:border-slate-700 rounded-2xl transition-all active:scale-[0.98] group shadow-sm hover:border-red-100 dark:hover:border-red-900/30"
                        >
-                          {/* Left Icon */}
                           <div className="shrink-0 w-10 h-10 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center text-red-600 shadow-sm border border-slate-100 dark:border-slate-600">
                              <Youtube size={20} fill="currentColor" />
                           </div>
                           
-                          {/* Center Text */}
                           <div className="flex-grow min-w-0">
                              <div className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight mb-0.5 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
                                 {item.title}
@@ -347,12 +326,10 @@ const UniversityDetailsPage: React.FC = () => {
                              </div>
                           </div>
 
-                          {/* Right Icon */}
                           <ExternalLink size={16} className="text-slate-300 group-hover:text-red-400 transition-colors shrink-0" />
                        </a>
                     ))}
 
-                    {/* Disclaimer */}
                     <div className="pt-2 pb-1">
                        <p className="text-[10px] text-slate-400 text-center leading-relaxed">
                           Videos are sourced from public YouTube content. After Inter does not promote or endorse any specific creator.
@@ -364,7 +341,6 @@ const UniversityDetailsPage: React.FC = () => {
            </AnimatePresence>
         </section>
 
-        {/* --- 5. POST VIDEO CTA --- */}
         <section>
            <button 
              onClick={toggleSave}
@@ -381,19 +357,17 @@ const UniversityDetailsPage: React.FC = () => {
               )}
            </button>
            <div className="mt-4 flex justify-center">
-              <Link to={`/compare?ids=${uni.id}`} className="text-slate-500 hover:text-primary-teal font-bold text-sm underline decoration-dashed">
+              <Link href={`/compare?ids=${uni.id}`} className="text-slate-500 hover:text-primary-teal font-bold text-sm underline decoration-dashed">
                  Compare with other colleges
               </Link>
            </div>
         </section>
 
-        {/* --- AD PLACEHOLDER 1 --- */}
         <div className="w-full h-32 bg-slate-50 dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-slate-300">
            <span className="text-[10px] font-bold uppercase tracking-widest bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded mb-1 text-slate-400">Advertisement</span>
            <span className="text-[10px] font-bold uppercase tracking-widest">Sponsored Ad</span>
         </div>
 
-        {/* --- 6. COURSES & ELIGIBILITY --- */}
         <section>
            <h2 className="text-xl font-black mb-5 flex items-center gap-2 px-1">
              <GraduationCap className="text-slate-400" size={24} />
@@ -433,7 +407,6 @@ const UniversityDetailsPage: React.FC = () => {
                                       </span>
                                   </div>
                                   
-                                  {/* Distinct Eligibility Section */}
                                   <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
                                      <CheckCircle2 size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                                      <div className="text-xs text-blue-900 dark:text-blue-100 leading-relaxed">
@@ -452,7 +425,6 @@ const UniversityDetailsPage: React.FC = () => {
            </div>
         </section>
 
-        {/* --- 7. FEES SECTION --- */}
         <section>
            <h2 className="text-xl font-black mb-5 flex items-center gap-2 px-1">
              <IndianRupee className="text-slate-400" size={24} />
@@ -484,7 +456,6 @@ const UniversityDetailsPage: React.FC = () => {
            </div>
         </section>
 
-        {/* --- 8. SCHOLARSHIP SUPPORT --- */}
         <section>
            <h2 className="text-xl font-black mb-5 flex items-center gap-2 px-1">
              <Award className="text-slate-400" size={24} />
@@ -492,7 +463,7 @@ const UniversityDetailsPage: React.FC = () => {
            </h2>
            <div className="space-y-3">
               {relevantScholarships.length > 0 ? relevantScholarships.map(s => (
-                 <Link to={`/scholarships/${s.id}`} key={s.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-primary-teal transition-colors shadow-sm group">
+                 <Link href={`/scholarships/${s.id}`} key={s.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-primary-teal transition-colors shadow-sm group">
                     <div className="flex items-center gap-3">
                        <CheckCircle2 size={18} className="text-green-500 shrink-0" />
                        <span className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-primary-teal transition-colors">{s.name}</span>
@@ -510,7 +481,6 @@ const UniversityDetailsPage: React.FC = () => {
            </p>
         </section>
 
-        {/* --- 4. ADMISSION PREDICTOR (Moved Here) --- */}
         <section>
           <div className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 rounded-[1.5rem] p-6 text-white shadow-xl relative overflow-hidden">
              <div className="flex items-center gap-3 mb-6 relative z-10">
@@ -593,12 +563,10 @@ const UniversityDetailsPage: React.FC = () => {
                </div>
              )}
              
-             {/* Decorative */}
              <div className="absolute top-0 right-0 w-32 h-32 bg-primary-teal/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           </div>
         </section>
 
-        {/* --- 9. CONTACT & OFFICIAL INFO --- */}
         <section className="mb-8">
            <h2 className="text-xl font-black mb-5 flex items-center gap-2 px-1">
              <Building2 className="text-slate-400" size={24} />
@@ -623,10 +591,8 @@ const UniversityDetailsPage: React.FC = () => {
         </section>
       </div>
 
-      {/* --- 10. STICKY ACTION BAR --- */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 z-50 safe-pb shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
          <div className="max-w-3xl mx-auto flex items-center gap-3">
-            {/* DIRECT LINK TO PHOTOS (TRIGGERS NEW MODAL) */}
             <button 
               onClick={() => setShowPhotoOptions(true)}
               className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold py-3.5 px-4 rounded-xl text-sm transition-all active:scale-95 whitespace-nowrap"
@@ -653,7 +619,6 @@ const UniversityDetailsPage: React.FC = () => {
          </div>
       </div>
 
-      {/* --- 11. PHOTO OPTIONS MODAL (NEW) --- */}
       <AnimatePresence>
         {showPhotoOptions && (
           <>
@@ -681,7 +646,6 @@ const UniversityDetailsPage: React.FC = () => {
                </div>
 
                <div className="space-y-3">
-                  {/* OPTION 1: GOOGLE MAPS */}
                   <a 
                     href={mapsUrl} 
                     target="_blank" 
@@ -699,7 +663,6 @@ const UniversityDetailsPage: React.FC = () => {
                      <ExternalLink size={16} className="text-slate-300" />
                   </a>
 
-                  {/* OPTION 2: WEB SEARCH */}
                   <a 
                     href={imagesUrl} 
                     target="_blank" 
@@ -722,7 +685,6 @@ const UniversityDetailsPage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* --- 12. MAP SHEET (EXISTING) --- */}
       <AnimatePresence>
         {showImageSheet && (
           <>
@@ -740,7 +702,6 @@ const UniversityDetailsPage: React.FC = () => {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed inset-x-0 bottom-0 z-[60] bg-white dark:bg-slate-900 rounded-t-[2rem] overflow-hidden h-[85vh] flex flex-col shadow-2xl"
             >
-              {/* Header with Title and VIEW CONTROLS */}
               <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 bg-white dark:bg-slate-900">
                  <div className="flex justify-between items-center">
                     <div>
@@ -755,7 +716,6 @@ const UniversityDetailsPage: React.FC = () => {
                     </button>
                  </div>
 
-                 {/* Multi-View Toggles */}
                  <div className="flex gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto no-scrollbar">
                     <button 
                       onClick={() => setMapViewMode('m')}
@@ -778,7 +738,6 @@ const UniversityDetailsPage: React.FC = () => {
                  </div>
               </div>
 
-              {/* Content */}
               <div className="flex-grow bg-slate-100 dark:bg-slate-950 relative">
                  <iframe 
                    src={embedMapsUrl}
@@ -791,7 +750,6 @@ const UniversityDetailsPage: React.FC = () => {
                    className="w-full h-full"
                  ></iframe>
                  
-                 {/* Overlay Controls */}
                  <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-center shadow-lg space-y-3">
                     <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">More Photo Sources</p>
                     <div className="flex gap-3">

@@ -1,19 +1,19 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, ChevronRight, Building2, Compass, ArrowRight, Bell, CheckCircle2 } from 'lucide-react';
+import { Award, Building2, ArrowRight, Bell, CheckCircle2, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { scholarships } from '../data/scholarships';
 import { exams } from '../data/exams';
+import { blogPosts } from '../data/blogPosts';
 
 export default function HomePage() {
   const [showReminder, setShowReminder] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [endingSoonExams, setEndingSoonExams] = useState<any[]>([]);
 
-  // Prevent hydration mismatch by calculating dates only on client
   useEffect(() => {
     setMounted(true);
     const today = new Date();
@@ -28,7 +28,7 @@ export default function HomePage() {
       })
       .filter(e => e.daysLeft >= 0 && e.daysLeft <= 30)
       .sort((a, b) => a.daysLeft - b.daysLeft)
-      .slice(0, 5);
+      .slice(0, 3);
       
     setEndingSoonExams(filtered);
   }, []);
@@ -39,7 +39,6 @@ export default function HomePage() {
     setTimeout(() => setShowReminder(false), 3000);
   };
 
-  // Fallback for SSR to prevent blank flash or mismatch
   if (!mounted) {
     return <div className="min-h-screen bg-slate-50 dark:bg-slate-950 animate-pulse" />;
   }
@@ -60,6 +59,7 @@ export default function HomePage() {
         )}
       </AnimatePresence>
 
+      {/* Hero */}
       <section className="relative bg-gradient-to-br from-primary-teal to-teal-700 py-12 md:py-20 px-4 overflow-hidden text-white">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         <div className="max-w-7xl mx-auto relative z-10 text-center">
@@ -72,7 +72,7 @@ export default function HomePage() {
           </motion.h1>
 
           <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
-            AfterInter is the most trusted education portal for intermediate students in Telangana and Andhra Pradesh. We simplify the chaos of engineering, medical, and professional admissions by aggregating verified data from TSCHE, APSCHE, and official university portals.
+            AfterInter is the most trusted education portal for intermediate students in Telangana and Andhra Pradesh. We simplify the chaos of engineering, medical, and professional admissions by aggregating verified data.
           </p>
 
           <motion.div 
@@ -91,36 +91,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Authority Content Section for AdSense/SEO */}
-      <section className="py-16 px-4 bg-white dark:bg-slate-950">
-        <div className="max-w-4xl mx-auto text-slate-800 dark:text-slate-200">
-          <h2 className="text-3xl font-black mb-6 text-slate-900 dark:text-white">Your Comprehensive Guide to Admissions in Telangana & Andhra Pradesh</h2>
-          <div className="prose dark:prose-invert max-w-none space-y-4 text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-            <p>
-              Navigating life after Intermediate (12th Grade) can be overwhelming. For students in <strong>Hyderabad, Vijayawada, Warangal, and Visakhapatnam</strong>, the competition is high and information is often fragmented. Our mission at AfterInter is to provide a single-window discovery platform that empowers students and parents with verified facts.
-            </p>
-            <p>
-              Whether you are preparing for <strong>TS EAMCET 2025</strong>, searching for the top <strong>autonomous engineering colleges in Telangana</strong>, or looking for <strong>full fee reimbursement schemes like Jagananna Vidya Deevena (JVD) or ePASS</strong>, our data-driven approach ensures you never miss a deadline. We track the latest notifications from the <strong>Telangana State Council of Higher Education (TSCHE)</strong> and the <strong>Andhra Pradesh State Council of Higher Education (APSCHE)</strong> in real-time.
-            </p>
-            <p>
-              Beyond just admissions, we provide specialized tools such as the <strong>Cutoff Rank Predictor</strong> and <strong>College Comparison</strong> tool, helping you analyze the Return on Investment (ROI) for various institutions. At AfterInter, we believe that quality information is the first step toward a successful career.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 bg-slate-50 dark:bg-slate-900">
+      {/* Deadlines Section */}
+      <section className="py-12 bg-slate-50 dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-4">
            <div className="flex justify-between items-end mb-8">
               <div>
-                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Upcoming Exam Deadlines</h2>
-                 <p className="text-slate-500 font-medium italic">Verified by AI analysis from official government sources.</p>
+                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Upcoming Deadlines</h2>
+                 <p className="text-slate-500 font-medium italic">Don't miss these critical dates.</p>
               </div>
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {endingSoonExams.map((exam) => (
-                <div key={exam.id} className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div key={exam.id} className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white">{exam.name}</h3>
                     <span className="bg-red-100 text-red-700 text-[10px] font-black px-2 py-1 rounded-full uppercase">{exam.daysLeft} Days Left</span>

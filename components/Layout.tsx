@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GraduationCap, Calculator, Home, Star, FileText, Gift, LayoutGrid, Search, X } from 'lucide-react';
+import { GraduationCap, Calculator, Home, Star, FileText, Gift, LayoutGrid, Search, X, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdSense } from './AdSense';
 
@@ -46,6 +46,7 @@ const Navbar = () => {
     { name: 'Universities', path: '/universities', icon: <GraduationCap size={18} /> },
     { name: 'Exams', path: '/exams', icon: <FileText size={18} /> },
     { name: 'Scholarships', path: '/scholarships', icon: <Gift size={18} /> },
+    { name: 'Blog', path: '/blog', icon: <BookOpen size={18} /> },
     { name: 'Tools', path: '/tools', icon: <Calculator size={18} /> },
   ];
 
@@ -158,20 +159,18 @@ const Navbar = () => {
 const BottomNav = () => {
   const location = useLocation();
 
-  // Hide BottomNav on detail pages where sticky action bars exist to prevent overlap
-  // This targets /universities/:id and /exams/:id specifically
   const shouldHide = 
     (location.pathname.startsWith('/universities/') && location.pathname !== '/universities') ||
-    (location.pathname.startsWith('/exams/') && location.pathname !== '/exams');
+    (location.pathname.startsWith('/exams/') && location.pathname !== '/exams') ||
+    (location.pathname.startsWith('/blog/') && location.pathname !== '/blog');
 
   if (shouldHide) return null;
 
-  // 5 Fixed Tabs - Instagram Style
   const tabs = [
     { name: 'Home', path: '/', icon: <Home size={24} />, activeColor: 'text-primary-teal' },
     { name: 'Colleges', path: '/universities', icon: <GraduationCap size={24} />, activeColor: 'text-primary-teal' },
     { name: 'Exams', path: '/exams', icon: <FileText size={24} />, activeColor: 'text-blue-500' },
-    { name: 'Scholarships', path: '/scholarships', icon: <Gift size={24} />, activeColor: 'text-secondary-purple' },
+    { name: 'Blog', path: '/blog', icon: <BookOpen size={24} />, activeColor: 'text-secondary-purple' },
     { name: 'Tools', path: '/tools', icon: <LayoutGrid size={24} />, activeColor: 'text-orange-500' },
   ];
 
@@ -198,7 +197,6 @@ const BottomNav = () => {
                 {tab.name}
               </span>
               
-              {/* Active Indicator Dot */}
               {isActive && (
                 <motion.div 
                   layoutId="bottomNavIndicator"
@@ -230,12 +228,12 @@ const Footer = () => (
         </div>
       </div>
       <div>
-        <h4 className="font-bold text-white mb-4">Quick Links</h4>
+        <h4 className="font-bold text-white mb-4">Resources</h4>
         <ul className="space-y-2 text-sm">
           <li><Link to="/universities" className="hover:text-primary-teal">Universities</Link></li>
           <li><Link to="/exams" className="hover:text-primary-teal">Entrance Exams</Link></li>
           <li><Link to="/scholarships" className="hover:text-primary-teal">Scholarships</Link></li>
-          <li><Link to="/saved" className="hover:text-primary-teal">My Saved List</Link></li>
+          <li><Link to="/blog" className="hover:text-primary-teal">Blog</Link></li>
         </ul>
       </div>
       <div>
@@ -256,7 +254,6 @@ const Footer = () => (
     </div>
     
     <div className="max-w-7xl mx-auto px-4 mt-8">
-       {/* Safe AdSense Placement in Footer */}
        <AdSense slot="1234567890" label="Sponsor" />
     </div>
 

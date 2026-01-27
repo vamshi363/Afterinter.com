@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -6,9 +7,9 @@ import { GraduationCap, Award, ChevronRight, Building2, Compass, ArrowRight, Bel
 import Link from 'next/link';
 import { scholarships } from '../data/scholarships';
 import { exams } from '../data/exams';
+import { blogPosts } from '../data/blogPosts';
 
 const HomePage: React.FC = () => {
-  // New State for Reminder Toast
   const [showReminder, setShowReminder] = useState(false);
   
   const handleSetReminder = (e: React.MouseEvent) => {
@@ -18,26 +19,24 @@ const HomePage: React.FC = () => {
     setTimeout(() => setShowReminder(false), 3000);
   };
 
-  // Filter exams for "Beyond EAMCET" section (Private Universities & Deemed)
   const alternativeExams = useMemo(() => {
     return exams.filter(e => e.category === 'Private Engineering' || e.category === 'Skill-Based');
   }, []);
 
-  // AI-Driven: Calculate days left based on the Verified 'applicationEnd' field
   const endingSoonExams = useMemo(() => {
     const today = new Date();
     
     return exams
-      .filter(e => e.applicationEnd) // Only those with AI-detected dates
+      .filter(e => e.applicationEnd)
       .map(e => {
         const endDate = new Date(e.applicationEnd!);
         const diffTime = endDate.getTime() - today.getTime();
         const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return { ...e, daysLeft };
       })
-      .filter(e => e.daysLeft >= 0 && e.daysLeft <= 30) // Only upcoming in 30 days
-      .sort((a, b) => a.daysLeft - b.daysLeft) // Urgent first
-      .slice(0, 5); // Limit to top 5
+      .filter(e => e.daysLeft >= 0 && e.daysLeft <= 30)
+      .sort((a, b) => a.daysLeft - b.daysLeft)
+      .slice(0, 5);
   }, []);
 
   const getBadgeColor = (days: number) => {
@@ -46,13 +45,11 @@ const HomePage: React.FC = () => {
     return 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700';
   };
 
-  // Helper to format "last checked" time
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
   };
 
-  // --- NEW HELPERS FOR EXAM CARDS ---
   const getDeadlineBadge = (dateStr?: string) => {
     if (!dateStr) return null;
     const endDate = new Date(dateStr);
@@ -60,7 +57,7 @@ const HomePage: React.FC = () => {
     const diffTime = endDate.getTime() - today.getTime();
     const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (days < 0) return null; // Expired
+    if (days < 0) return null;
     
     if (days <= 3) return (
       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 mb-1">
@@ -89,7 +86,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="w-full relative">
-      {/* Toast Notification */}
       <AnimatePresence>
         {showReminder && (
           <motion.div 
@@ -104,13 +100,12 @@ const HomePage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Hero Section - Compacted for Mobile */}
+      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary-teal to-teal-700 py-6 md:py-16 px-4 overflow-hidden text-white">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-secondary-purple/20 rounded-full blur-3xl"></div>
         
         <div className="max-w-7xl mx-auto relative z-10 text-center">
-          
           <motion.h1 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -129,7 +124,6 @@ const HomePage: React.FC = () => {
             <span className="text-base md:text-xl font-black text-white/90">You are here to find</span>
           </motion.div>
 
-          {/* Big Bold Navigation Buttons */}
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -152,7 +146,6 @@ const HomePage: React.FC = () => {
              </Link>
           </motion.div>
 
-          {/* NEW CTA for Exam Finder - Highlighted */}
           <motion.div
              initial={{ opacity: 0, y: 10 }}
              animate={{ opacity: 1, y: 0 }}
@@ -173,7 +166,7 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* EXAMS BEYOND EAMCET SECTION (Moved Up) */}
+      {/* Exams Beyond EAMCET */}
       <section className="py-12 bg-slate-50 dark:bg-slate-950 overflow-hidden border-b border-slate-100 dark:border-slate-800">
          <div className="max-w-7xl mx-auto pl-4 pr-0 md:px-4">
             <div className="flex justify-between items-end mb-6 pr-4">
@@ -207,21 +200,9 @@ const HomePage: React.FC = () => {
                            
                            <h3 className="font-black text-lg leading-tight mb-1 truncate">{exam.name}</h3>
                            <p className="text-xs text-slate-400 truncate mb-1">{exam.fullName}</p>
-                           
-                           {/* Micro Guidance */}
                            <p className="text-[10px] text-slate-500 mb-3 font-medium bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded w-fit">
                               {getMicroGuidance(exam.category)}
                            </p>
-                           
-                           <div className="mb-4">
-                              <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">Accepted By</div>
-                              <div className="flex flex-wrap gap-1">
-                                 {exam.colleges.slice(0, 2).map((col, i) => (
-                                    <span key={i} className="text-[10px] bg-slate-50 dark:bg-slate-700 px-2 py-1 rounded border dark:border-slate-600 text-slate-600 dark:text-slate-300 truncate max-w-[120px]">{col.split(' ')[0]}</span>
-                                 ))}
-                                 {exam.colleges.length > 2 && <span className="text-[10px] text-slate-400 flex items-center">+{exam.colleges.length - 2} more</span>}
-                              </div>
-                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 mt-2">
@@ -229,148 +210,21 @@ const HomePage: React.FC = () => {
                               href={`/exams/${exam.id}`}
                               className="py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs text-center hover:opacity-90 transition-opacity shadow-sm"
                            >
-                              View Exam Details
+                              Details
                            </Link>
                            <Link 
                               href={`/universities?q=${encodeURIComponent(exam.name)}`}
                               className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-xs text-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                            >
-                              View Colleges
+                              Colleges
                            </Link>
                         </div>
                      </motion.div>
                   ))}
-                  
-                  {/* Explore More Card */}
-                  <Link href="/exams" className="snap-center w-40 bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] flex flex-col items-center justify-center text-center p-4 border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-primary-teal transition-colors group">
-                     <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
-                        <ArrowRight size={20} className="text-slate-400 group-hover:text-primary-teal" />
-                     </div>
-                     <span className="font-bold text-sm text-slate-500 group-hover:text-primary-teal">Explore All Exams</span>
-                  </Link>
                </div>
             </div>
          </div>
       </section>
-
-      {/* NEW: EXAMS THAT END SOON SECTION (AI VERIFIED - Moved Down) */}
-      <section className="py-12 bg-white dark:bg-slate-900">
-        <div className="max-w-3xl mx-auto px-4">
-           {/* Section Header */}
-           <div className="flex justify-between items-end mb-6">
-              <div>
-                 <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-1 flex items-center gap-2">
-                    ⏰ Exams That End Soon
-                 </h2>
-                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    AI-Verified deadlines from official sources.
-                 </p>
-              </div>
-              <Link href="/exams" className="text-xs font-bold text-primary-teal hover:text-teal-700 flex items-center gap-1 mb-1">
-                 View all exams <ArrowRight size={12} />
-              </Link>
-           </div>
-
-           {/* Vertical Card List */}
-           <div className="space-y-4">
-              {endingSoonExams.length > 0 ? (
-                 endingSoonExams.map((exam, idx) => (
-                   <motion.div 
-                      key={exam.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      className="bg-white dark:bg-slate-900 rounded-[1.25rem] p-5 shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden group"
-                   >
-                      <div className="flex justify-between items-start mb-3">
-                         <div>
-                            <h3 className="text-lg font-black text-slate-900 dark:text-white leading-tight">
-                               {exam.name}
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                               {/* Verification Badge */}
-                               {exam.verificationStatus === 'Verified' ? (
-                                  <div className="flex items-center gap-1 text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 px-2 py-0.5 rounded-full">
-                                     <ShieldCheck size={12} />
-                                     Verified {formatTimeAgo(exam.lastVerified)}
-                                  </div>
-                               ) : (
-                                  <div className="flex items-center gap-1 text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800 px-2 py-0.5 rounded-full">
-                                     <AlertTriangle size={12} />
-                                     Verification Pending
-                                  </div>
-                               )}
-                            </div>
-                         </div>
-                         
-                         {/* Countdown Badge */}
-                         <div className={`px-3 py-1.5 rounded-lg border flex items-center gap-1.5 ${getBadgeColor(exam.daysLeft)}`}>
-                            <CalendarClock size={14} />
-                            <span className="text-xs font-bold whitespace-nowrap">
-                               {exam.daysLeft} days left
-                            </span>
-                         </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 mb-4 text-xs font-medium text-slate-500 dark:text-slate-400">
-                         <span className="bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300">
-                            {exam.category}
-                         </span>
-                         <span className="truncate max-w-[150px]">
-                            Deadline: {exam.applicationEnd}
-                         </span>
-                      </div>
-
-                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
-                         <Link 
-                            href={`/exams/${exam.id}`} 
-                            className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3 rounded-xl text-sm font-bold text-center hover:opacity-90 transition-opacity"
-                         >
-                            View Exam
-                         </Link>
-                         <button 
-                            onClick={handleSetReminder}
-                            className="w-12 h-11 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-primary-teal hover:border-primary-teal hover:bg-teal-50 dark:hover:bg-slate-800 transition-all active:scale-95"
-                            aria-label="Set Reminder"
-                         >
-                            <Bell size={20} />
-                         </button>
-                      </div>
-                      
-                      {/* Source Link (Trust Factor) */}
-                      {exam.sourceUrl && (
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                           <a 
-                             href={exam.sourceUrl} 
-                             target="_blank" 
-                             rel="noopener noreferrer" 
-                             className="text-[10px] text-slate-400 hover:text-primary-teal flex items-center gap-1 bg-white dark:bg-slate-800 px-2 py-1 rounded-full shadow-sm border border-slate-100 dark:border-slate-700"
-                             title="Verify on official site"
-                           >
-                              Source <ExternalLink size={10} />
-                           </a>
-                        </div>
-                      )}
-                   </motion.div>
-                 ))
-              ) : (
-                <div className="text-center py-8 bg-white dark:bg-slate-900 rounded-[1.5rem] border border-dashed border-slate-200 dark:border-slate-800">
-                   <p className="text-slate-500 text-sm font-medium">No deadlines closing in the next 30 days.</p>
-                   <Link href="/exams" className="text-primary-teal font-bold text-xs mt-2 inline-block">View upcoming calendar</Link>
-                </div>
-              )}
-           </div>
-        </div>
-      </section>
-
-      {/* ADVERTISEMENT 2 */}
-      <div className="w-full bg-slate-50 dark:bg-slate-950 py-6 border-y border-slate-100 dark:border-slate-800">
-         <div className="max-w-4xl mx-auto px-4">
-            <div className="w-full h-28 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">
-               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sponsored Ad</span>
-            </div>
-         </div>
-      </div>
 
       {/* Scholarships Section */}
       <section className="py-12 bg-white dark:bg-slate-900">
@@ -412,13 +266,6 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ADVERTISEMENT 3 */}
-      <div className="max-w-7xl mx-auto px-4 mb-12">
-        <div className="w-full h-24 bg-slate-100 dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-center">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Advertisement</span>
-        </div>
-      </div>
-
       {/* Bottom CTA */}
       <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto bg-primary-teal rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden text-center text-white shadow-2xl">
@@ -434,7 +281,6 @@ const HomePage: React.FC = () => {
                </Link>
             </div>
           </div>
-          {/* Decorative shapes */}
           <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3 blur-2xl"></div>
         </div>

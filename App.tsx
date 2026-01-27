@@ -17,6 +17,8 @@ import ComparePage from './pages/ComparePage';
 import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
 import LegalPage from './pages/LegalPage';
+import BlogPage from './pages/BlogPage';
+import BlogPostPage from './pages/BlogPostPage';
 
 // Component to scroll to top on route change
 const ScrollToTop = () => {
@@ -47,6 +49,8 @@ const App: React.FC = () => {
           <Route path="/compare" element={<ComparePage />} />
           <Route path="/help" element={<HelpPage />} />
           <Route path="/saved" element={<SavedPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<LegalPage title="Privacy Policy" />} />

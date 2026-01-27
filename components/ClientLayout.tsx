@@ -1,9 +1,10 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { GraduationCap, Calculator, Home, Star, FileText, Gift, LayoutGrid, Search, X } from 'lucide-react';
+import { GraduationCap, Calculator, Home, Star, FileText, Gift, LayoutGrid, Search, X, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdSense } from './AdSense';
 
@@ -49,6 +50,7 @@ const Navbar = () => {
     { name: 'Universities', path: '/universities', icon: <GraduationCap size={18} /> },
     { name: 'Exams', path: '/exams', icon: <FileText size={18} /> },
     { name: 'Scholarships', path: '/scholarships', icon: <Gift size={18} /> },
+    { name: 'Blog', path: '/blog', icon: <BookOpen size={18} /> }, // Added Blog Link
     { name: 'Tools', path: '/tools', icon: <LayoutGrid size={18} /> },
   ];
 
@@ -153,7 +155,8 @@ const BottomNav = () => {
 
   const shouldHide = 
     (pathname?.startsWith('/universities/') && pathname !== '/universities') ||
-    (pathname?.startsWith('/exams/') && pathname !== '/exams');
+    (pathname?.startsWith('/exams/') && pathname !== '/exams') ||
+    (pathname?.startsWith('/blog/') && pathname !== '/blog');
 
   if (shouldHide) return null;
 
@@ -161,7 +164,7 @@ const BottomNav = () => {
     { name: 'Home', path: '/', icon: <Home size={24} />, activeColor: 'text-primary-teal' },
     { name: 'Colleges', path: '/universities', icon: <GraduationCap size={24} />, activeColor: 'text-primary-teal' },
     { name: 'Exams', path: '/exams', icon: <FileText size={24} />, activeColor: 'text-blue-500' },
-    { name: 'Scholarships', path: '/scholarships', icon: <Gift size={24} />, activeColor: 'text-secondary-purple' },
+    { name: 'Blog', path: '/blog', icon: <BookOpen size={24} />, activeColor: 'text-secondary-purple' },
     { name: 'Tools', path: '/tools', icon: <LayoutGrid size={24} />, activeColor: 'text-orange-500' },
   ];
 
@@ -213,9 +216,6 @@ const Footer = () => (
           <span className="font-bold text-xl text-white">AfterInter</span>
         </div>
         <p className="text-sm leading-relaxed mb-6">Empowering intermediate students in Telangana and Andhra Pradesh with verified education discovery tools, counseling updates, and scholarship data.</p>
-        <div className="flex gap-4">
-           {/* Social links could go here */}
-        </div>
       </div>
       <div>
         <h4 className="font-black text-white uppercase text-xs tracking-widest mb-6">Resources</h4>
@@ -223,7 +223,7 @@ const Footer = () => (
           <li><Link href="/universities" className="hover:text-primary-teal transition-colors">College Directory</Link></li>
           <li><Link href="/exams" className="hover:text-primary-teal transition-colors">Entrance Exams</Link></li>
           <li><Link href="/scholarships" className="hover:text-primary-teal transition-colors">Scholarship Finder</Link></li>
-          <li><Link href="/tools" className="hover:text-primary-teal transition-colors">Admission Tools</Link></li>
+          <li><Link href="/blog" className="hover:text-primary-teal transition-colors">Education Blog</Link></li>
         </ul>
       </div>
       <div>

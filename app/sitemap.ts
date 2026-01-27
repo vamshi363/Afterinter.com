@@ -1,7 +1,9 @@
+
 import { MetadataRoute } from 'next';
 import { universities } from '../data/universities';
 import { exams } from '../data/exams';
 import { scholarships } from '../data/scholarships';
+import { blogPosts } from '../data/blogPosts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.afterinter.com';
@@ -11,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/universities',
     '/exams',
     '/scholarships',
+    '/blog',
     '/tools',
     '/exam-finder',
     '/about',
@@ -35,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const examRoutes = exams.map((exam) => ({
     url: `${baseUrl}/exams/${exam.id}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as const, // Exams change status frequently
+    changeFrequency: 'daily' as const,
     priority: 0.9,
   }));
 
@@ -46,5 +49,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...universityRoutes, ...examRoutes, ...scholarshipRoutes];
+  const blogRoutes = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  return [
+    ...staticRoutes, 
+    ...universityRoutes, 
+    ...examRoutes, 
+    ...scholarshipRoutes,
+    ...blogRoutes
+  ];
 }

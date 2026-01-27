@@ -1,27 +1,31 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, Calculator, Home, Star, FileText, Gift, LayoutGrid, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AdSense } from './AdSense';
 
-// Navbar Component
 const Navbar = () => {
-  const { pathname } = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const [savedCount, setSavedCount] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Sync saved count
   useEffect(() => {
     const updateCount = () => {
       const saved = JSON.parse(localStorage.getItem('tsap_saved_unis') || '[]');
       setSavedCount(saved.length);
     };
+
     updateCount();
     window.addEventListener('favorites-updated', updateCount);
     return () => window.removeEventListener('favorites-updated', updateCount);
   }, []);
 
+  // Focus input when search opens
   useEffect(() => {
     if (isSearchOpen && inputRef.current) {
       inputRef.current.focus();
@@ -46,9 +50,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b transition-colors duration-300 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+    <>
+      <nav className="sticky top-0 z-40 w-full border-b transition-colors duration-300 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center overflow-hidden">
+            
             <AnimatePresence mode="wait">
               {!isSearchOpen ? (
                 <motion.div 
@@ -58,6 +64,7 @@ const Navbar = () => {
                   exit={{ opacity: 0 }}
                   className="w-full flex justify-between items-center"
                 >
+                  {/* Logo Area */}
                   <Link to="/" className="flex items-center space-x-2 shrink-0">
                     <div className="bg-primary-teal p-1.5 rounded-lg text-white">
                       <GraduationCap size={24} />
@@ -67,12 +74,13 @@ const Navbar = () => {
                     </span>
                   </Link>
 
+                  {/* Desktop Nav */}
                   <div className="hidden md:flex space-x-6 items-center">
                     {navLinks.map((link) => (
                       <Link
                         key={link.path}
                         to={link.path}
-                        className={`flex items-center space-x-1 font-medium transition-colors hover:text-primary-teal ${pathname === link.path ? 'text-primary-teal' : 'text-slate-600 dark:text-slate-400'}`}
+                        className={`flex items-center space-x-1 font-medium transition-colors hover:text-primary-teal ${location.pathname === link.path ? 'text-primary-teal' : 'text-slate-600 dark:text-slate-400'}`}
                       >
                         {link.icon}
                         <span>{link.name}</span>
@@ -80,7 +88,9 @@ const Navbar = () => {
                     ))}
                   </div>
 
+                  {/* Right Action Area (Mobile & Desktop) */}
                   <div className="flex items-center space-x-2">
+                     {/* Search Icon Trigger */}
                      <button 
                        onClick={() => setIsSearchOpen(true)}
                        className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400 hover:text-primary-teal"
@@ -89,6 +99,7 @@ const Navbar = () => {
                        <Search size={24} strokeWidth={2} />
                      </button>
 
+                     {/* Saved Icon (Top Right Corner Feature) */}
                      <Link 
                        to="/saved" 
                        className="relative p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" 
@@ -102,6 +113,7 @@ const Navbar = () => {
                        )}
                      </Link>
                      
+                     {/* Desktop Login */}
                      <Link to="/login" className="hidden md:block bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 px-5 py-2 rounded-full font-bold text-sm transition-all ml-2">
                        Login
                      </Link>
@@ -135,22 +147,26 @@ const Navbar = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
           </div>
         </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 
-// BottomNav Component
 const BottomNav = () => {
-  const { pathname } = useLocation();
+  const location = useLocation();
 
+  // Hide BottomNav on detail pages where sticky action bars exist to prevent overlap
+  // This targets /universities/:id and /exams/:id specifically
   const shouldHide = 
-    (pathname?.startsWith('/universities/') && pathname !== '/universities') ||
-    (pathname?.startsWith('/exams/') && pathname !== '/exams');
+    (location.pathname.startsWith('/universities/') && location.pathname !== '/universities') ||
+    (location.pathname.startsWith('/exams/') && location.pathname !== '/exams');
 
   if (shouldHide) return null;
 
+  // 5 Fixed Tabs - Instagram Style
   const tabs = [
     { name: 'Home', path: '/', icon: <Home size={24} />, activeColor: 'text-primary-teal' },
     { name: 'Colleges', path: '/universities', icon: <GraduationCap size={24} />, activeColor: 'text-primary-teal' },
@@ -163,7 +179,7 @@ const BottomNav = () => {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pb-safe md:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
       <div className="flex justify-between items-center h-[60px] px-2 max-w-md mx-auto">
         {tabs.map((tab) => {
-          const isActive = pathname === tab.path || (tab.path !== '/' && pathname?.startsWith(tab.path));
+          const isActive = location.pathname === tab.path || (tab.path !== '/' && location.pathname.startsWith(tab.path));
           
           return (
             <Link 
@@ -176,12 +192,13 @@ const BottomNav = () => {
                   fill: isActive ? 'currentColor' : 'none',
                   strokeWidth: isActive ? 2.5 : 2,
                   className: `transition-all duration-300 ${isActive ? 'drop-shadow-sm scale-110' : ''}`
-                })}
+                } as any)}
               </div>
               <span className={`text-[10px] font-medium tracking-wide ${isActive ? 'font-bold' : ''}`}>
                 {tab.name}
               </span>
               
+              {/* Active Indicator Dot */}
               {isActive && (
                 <motion.div 
                   layoutId="bottomNavIndicator"
@@ -196,7 +213,6 @@ const BottomNav = () => {
   );
 };
 
-// Footer Component
 const Footer = () => (
   <footer className="mt-auto border-t py-12 bg-slate-900 border-slate-800 text-slate-400 mb-20 md:mb-0">
     <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -207,7 +223,11 @@ const Footer = () => (
           </div>
           <span className="font-bold text-lg text-white">After Inter</span>
         </div>
-        <p className="text-sm">Empowering students in Telangana and Andhra Pradesh with verified education discovery tools.</p>
+        <p className="text-sm">Empowering students in Telangana and Andhra Pradesh with verified education discovery tools and data.</p>
+        <div className="mt-6 flex flex-col gap-2">
+           <Link to="/about" className="text-sm hover:text-white transition-colors">About Us</Link>
+           <Link to="/contact" className="text-sm hover:text-white transition-colors">Contact Support</Link>
+        </div>
       </div>
       <div>
         <h4 className="font-bold text-white mb-4">Quick Links</h4>
@@ -234,7 +254,13 @@ const Footer = () => (
         </ul>
       </div>
     </div>
-    <div className="max-w-7xl mx-auto px-4 pt-8 mt-8 border-t border-slate-800 text-center text-xs">
+    
+    <div className="max-w-7xl mx-auto px-4 mt-8">
+       {/* Safe AdSense Placement in Footer */}
+       <AdSense slot="1234567890" label="Sponsor" />
+    </div>
+
+    <div className="max-w-7xl mx-auto px-4 pt-8 mt-4 border-t border-slate-800 text-center text-xs">
       © 2025 After Inter. Official University & Scholarship Websites Only.
     </div>
   </footer>

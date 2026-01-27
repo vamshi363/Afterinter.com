@@ -511,7 +511,7 @@ const QuestionStep: React.FC<{
         >
           {opt.icon && (
             <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-primary-teal group-hover:text-white transition-colors shrink-0">
-               {React.cloneElement(opt.icon as React.ReactElement, { size: 20 })}
+               {React.cloneElement(opt.icon as React.ReactElement, { size: 20 } as any)}
             </div>
           )}
           <div className="flex-grow">

@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { scholarships } from '../data/scholarships';
 import { Search, Award, Calendar, CheckCircle2, ChevronRight, Filter, IndianRupee } from 'lucide-react';

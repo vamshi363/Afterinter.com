@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Calculator, TrendingUp, Search, Info, CheckCircle2, 

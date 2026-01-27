@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
@@ -13,6 +14,8 @@ import ExamFinderPage from './pages/ExamFinderPage';
 import HelpPage from './pages/HelpPage';
 import SavedPage from './pages/SavedPage';
 import ComparePage from './pages/ComparePage';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
 import { LegalPage } from './pages/LegalPage';
 
 // Component to scroll to top on route change
@@ -44,6 +47,8 @@ const App: React.FC = () => {
           <Route path="/compare" element={<ComparePage />} />
           <Route path="/help" element={<HelpPage />} />
           <Route path="/saved" element={<SavedPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<LegalPage title="Privacy Policy" />} />
           <Route path="/terms" element={<LegalPage title="Terms & Conditions" />} />
           <Route path="/disclaimer" element={<LegalPage title="Disclaimer" />} />

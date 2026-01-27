@@ -14,8 +14,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const UniversityDetailsPage: React.FC = () => {
-  const params = useParams();
-  const id = params?.id as string;
+  const { id } = useParams<{ id: string }>();
   const uni = universities.find(u => u.id === id);
   
   const [isSaved, setIsSaved] = useState(false);

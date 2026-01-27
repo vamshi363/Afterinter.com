@@ -178,7 +178,7 @@ const BottomNav = () => {
               className={`flex-1 flex flex-col items-center justify-center h-full space-y-1 relative active:scale-90 transition-transform ${isActive ? tab.activeColor : 'text-slate-400 dark:text-slate-500'}`}
             >
               <div className="relative">
-                {React.cloneElement(tab.icon as React.ReactElement<any>, { 
+                {React.cloneElement(tab.icon as React.ReactElement, { 
                   fill: isActive ? 'currentColor' : 'none',
                   strokeWidth: isActive ? 2.5 : 2,
                   className: `transition-all duration-300 ${isActive ? 'drop-shadow-sm scale-110' : ''}`

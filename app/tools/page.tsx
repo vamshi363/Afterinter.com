@@ -58,7 +58,7 @@ export default function ToolsPage() {
 
   // Application Tracker
   const [applications, setApplications] = useState<Application[]>([]);
-  const [newApp, setNewApp] = useState({ name: '', type: 'University', status: 'To Do' });
+  const [newApp, setNewApp] = useState<{ name: string; type: Application['type']; status: Application['status'] }>({ name: '', type: 'University', status: 'To Do' });
   const [showAddApp, setShowAddApp] = useState(false);
 
   useEffect(() => {
@@ -127,8 +127,8 @@ export default function ToolsPage() {
     const app: Application = {
       id: Date.now().toString(),
       name: newApp.name,
-      type: newApp.type as any,
-      status: newApp.status as any,
+      type: newApp.type,
+      status: newApp.status,
       deadline: new Date().toISOString().split('T')[0]
     };
     setApplications([...applications, app]);
@@ -137,7 +137,7 @@ export default function ToolsPage() {
   };
 
   const deleteApplication = (id: string) => setApplications(prev => prev.filter(a => a.id !== id));
-  const updateAppStatus = (id: string, status: string) => setApplications(prev => prev.map(a => a.id === id ? { ...a, status: status as any } : a));
+  const updateAppStatus = (id: string, status: string) => setApplications(prev => prev.map(a => a.id === id ? { ...a, status: status as Application['status'] } : a));
 
   const getChecklist = () => {
     const docs = ['Aadhar Card', '10th Marks Memo', '12th Marks Memo', 'Transfer Certificate', 'Photos'];
@@ -149,6 +149,53 @@ export default function ToolsPage() {
   const estimatedUni = universities.find(u => u.id === selectedUni);
   const compareUnis = universities.filter(u => compareList.includes(u.id));
 
+  // Handle scholarship check
+  const handleCheckScholarship = () => {
+    const incomeNum = parseInt(scholIncome);
+    const eligible = scholarships.filter(s => {
+      if (s.type === 'State') {
+        if (scholState === 'Telangana' && !s.provider.includes('Telangana')) return false;
+        if (scholState === 'Andhra Pradesh' && !s.provider.includes('Andhra')) return false;
+      }
+      
+      const incomeLimit = s.eligibility.match(/₹([\d.]+) Lakh/);
+      if (incomeLimit && incomeNum > parseFloat(incomeLimit[1]) * 100000) return false;
+
+      return true;
+    });
+    setScholResults(eligible);
+  };
+
+  const toolsList = [
+    { id: 'cutoff', label: 'Cutoff Predictor', icon: <TrendingUp size={18} />, color: 'bg-primary-teal' },
+    { id: 'fee', label: 'Fee Estimator', icon: <Calculator size={18} />, color: 'bg-secondary-purple' },
+    { id: 'scholarship-check', label: 'Scholarship Checker', icon: <Filter size={18} />, color: 'bg-pink-600' },
+    { id: 'tracker', label: 'Application Tracker', icon: <Save size={18} />, color: 'bg-indigo-600' },
+    { id: 'compare', label: 'Compare Colleges', icon: <Scale size={18} />, color: 'bg-orange-500' },
+    { id: 'checklist', label: 'Document Checklist', icon: <ClipboardList size={18} />, color: 'bg-cyan-600' },
+    { id: 'calendar', label: 'Deadlines Calendar', icon: <Calendar size={18} />, color: 'bg-blue-600' },
+    { id: 'roi', label: 'ROI Calculator', icon: <Banknote size={18} />, color: 'bg-green-600' },
+  ];
+
+  const calendarEvents = [
+    { title: "TS EAMCET Exam", date: "2025-05-10", type: "Exam", color: "red" },
+    { title: "AP EAPCET Exam", date: "2025-05-15", type: "Exam", color: "red" },
+    { title: "TS ICET Exam", date: "2025-05-25", type: "Exam", color: "orange" },
+    { title: "TS EAMCET Results", date: "2025-06-15", type: "Result", color: "green" },
+    { title: "Phase 1 Counseling", date: "2025-07-01", type: "Counseling", color: "blue" },
+    ...scholarships.map(s => ({
+      title: `${s.name} Deadline`,
+      date: s.deadline.includes('December') ? '2025-12-31' : '2025-09-30', // Mock parsing for demo
+      type: "Scholarship",
+      color: "purple"
+    }))
+  ].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const getDaysLeft = (dateStr: string) => {
+     const days = Math.ceil((new Date(dateStr).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+     return days > 0 ? `${days} days left` : 'Passed';
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <div className="text-center mb-10">
@@ -158,17 +205,10 @@ export default function ToolsPage() {
 
       <div className="flex flex-col lg:flex-row gap-12">
         <div className="lg:w-1/4 space-y-3">
-          {[
-            { id: 'cutoff', label: 'Cutoff Predictor', icon: <TrendingUp size={18} />, color: 'bg-primary-teal' },
-            { id: 'fee', label: 'Fee Estimator', icon: <Calculator size={18} />, color: 'bg-secondary-purple' },
-            { id: 'tracker', label: 'Application Tracker', icon: <Save size={18} />, color: 'bg-indigo-600' },
-            { id: 'compare', label: 'Compare Colleges', icon: <Scale size={18} />, color: 'bg-orange-500' },
-            { id: 'checklist', label: 'Document Checklist', icon: <ClipboardList size={18} />, color: 'bg-cyan-600' },
-            { id: 'roi', label: 'ROI Calculator', icon: <Banknote size={18} />, color: 'bg-green-600' },
-          ].map((tool) => (
+          {toolsList.map((tool) => (
             <button 
               key={tool.id}
-              onClick={() => setActiveTool(tool.id as any)}
+              onClick={() => setActiveTool(tool.id as typeof activeTool)}
               className={`w-full text-left p-4 rounded-2xl transition-all border flex items-center space-x-4 ${activeTool === tool.id ? `${tool.color} text-white shadow-lg` : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'}`}
             >
               <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/20">{tool.icon}</div>
@@ -217,7 +257,7 @@ export default function ToolsPage() {
                 {showAddApp && (
                   <form onSubmit={addApplication} className="mb-8 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-4">
                     <input className="p-3 rounded-lg" placeholder="Name" value={newApp.name} onChange={e => setNewApp({...newApp, name: e.target.value})} required />
-                    <select className="p-3 rounded-lg" value={newApp.status} onChange={e => setNewApp({...newApp, status: e.target.value as any})}><option>To Do</option><option>Applied</option></select>
+                    <select className="p-3 rounded-lg" value={newApp.status} onChange={e => setNewApp({...newApp, status: e.target.value as Application['status']})}><option>To Do</option><option>Applied</option></select>
                     <button type="submit" className="bg-indigo-600 text-white font-bold rounded-lg">Save</button>
                   </form>
                 )}
@@ -290,6 +330,35 @@ export default function ToolsPage() {
                 )}
               </motion.div>
             )}
+
+            {activeTool === 'scholarship-check' && (
+              <motion.div key="scholarship-check" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800">
+                <h2 className="text-2xl font-black mb-6">Scholarship Checker</h2>
+                <div className="space-y-4">
+                   <select className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-xl" value={scholState} onChange={e => setScholState(e.target.value)}><option>Telangana</option><option>Andhra Pradesh</option></select>
+                   <select className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-xl" value={scholIncome} onChange={e => setScholIncome(e.target.value)}><option value="100000">Less than 1L</option><option value="200000">Less than 2L</option></select>
+                   <button onClick={handleCheckScholarship} className="w-full py-4 bg-pink-600 text-white font-black rounded-xl">Find Scholarships</button>
+                </div>
+                <div className="mt-6 space-y-2">
+                   {scholResults.map(s => <div key={s.id} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl font-bold text-sm">{s.name}</div>)}
+                </div>
+              </motion.div>
+            )}
+
+            {activeTool === 'calendar' && (
+              <motion.div key="calendar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800">
+                <h2 className="text-2xl font-black mb-6">Deadlines Calendar</h2>
+                <div className="space-y-4">
+                   {calendarEvents.map((ev, i) => (
+                     <div key={i} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                        <div><div className="font-bold">{ev.title}</div><div className="text-xs text-slate-500">{ev.date}</div></div>
+                        <span className="text-xs font-bold bg-white dark:bg-slate-900 px-2 py-1 rounded">{getDaysLeft(ev.date)}</span>
+                     </div>
+                   ))}
+                </div>
+              </motion.div>
+            )}
+
           </AnimatePresence>
         </div>
       </div>

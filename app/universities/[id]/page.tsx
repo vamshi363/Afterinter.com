@@ -12,8 +12,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function UniversityDetailsPage() {
-  const params = useParams<{ id: string }>();
-  const id = params?.id;
+  const params = useParams();
+  const id = params?.id as string;
   const uni = universities.find(u => u.id === id);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);

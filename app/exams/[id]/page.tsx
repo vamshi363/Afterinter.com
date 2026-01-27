@@ -14,8 +14,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExamDetailsPage() {
-  const params = useParams<{ id: string }>();
-  const id = params?.id;
+  const params = useParams();
+  const id = params?.id as string;
   
   const exam = exams.find(e => e.id === id);
   const [isSaved, setIsSaved] = useState(false);

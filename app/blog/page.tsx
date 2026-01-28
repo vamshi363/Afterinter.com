@@ -1,7 +1,6 @@
-
 import React from 'react';
 import Link from 'next/link';
-import { blogPosts } from '../../data/blogPosts';
+import { blogPosts } from '@/data/blogPosts';
 import { Metadata } from 'next';
 import { BookOpen, Calendar, ArrowRight, Search } from 'lucide-react';
 

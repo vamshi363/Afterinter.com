@@ -7,11 +7,11 @@ import {
   Banknote, Scale, X, FileText, ClipboardList, 
   Clock, Plus, Save, Filter, MapPin, Compass
 } from 'lucide-react';
-import { universities } from '../../data/universities';
-import { scholarships } from '../../data/scholarships';
+import { universities } from '@/data/universities';
+import { scholarships } from '@/data/scholarships';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { UniversityCard } from '../../components/UniversityCard';
+import { UniversityCard } from '@/components/UniversityCard';
 
 interface Application {
   id: string;

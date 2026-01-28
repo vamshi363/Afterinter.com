@@ -1,11 +1,10 @@
-
 import React from 'react';
-import { blogPosts } from '../../../data/blogPosts';
+import { blogPosts } from '@/data/blogPosts';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Tag, Share2, User } from 'lucide-react';
-import { AdSense } from '../../../components/AdSense';
+import { AdSense } from '@/components/AdSense';
 
 interface Props {
   params: { slug: string };

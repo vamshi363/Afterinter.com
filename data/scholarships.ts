@@ -1,5 +1,4 @@
-
-import { Scholarship } from '../types';
+import { Scholarship } from '@/types';
 
 export const scholarships: Scholarship[] = [
   // --- STATE GOVERNMENT SCHOLARSHIPS (TELANGANA) ---

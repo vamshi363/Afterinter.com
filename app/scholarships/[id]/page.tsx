@@ -3,7 +3,7 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { scholarships } from '../../data/scholarships';
+import { scholarships } from '@/data/scholarships';
 import { Award, CheckCircle2, Info, AlertCircle, Calendar, ArrowLeft, ShieldCheck, FileText, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 

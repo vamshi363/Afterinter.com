@@ -7,7 +7,7 @@ import {
   Stethoscope, Gavel, FlaskConical, Filter
 } from 'lucide-react';
 import Link from 'next/link';
-import { exams } from '../../data/exams';
+import { exams } from '@/data/exams';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExamsPage() {

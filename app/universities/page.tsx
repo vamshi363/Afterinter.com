@@ -2,9 +2,9 @@
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { universities } from '../../data/universities';
+import { universities } from '@/data/universities';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
-import { UniversityCard } from '../../components/UniversityCard';
+import { UniversityCard } from '@/components/UniversityCard';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Separate component for content that uses useSearchParams

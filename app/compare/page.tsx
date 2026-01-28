@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { universities } from '../../data/universities';
-import { University } from '../../types';
+import { universities } from '@/data/universities';
+import { University } from '@/types';
 import { 
   ArrowLeft, X, Plus, TrendingUp, 
   IndianRupee, Building2, ShieldCheck, Sparkles, 

@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { exams } from '../../data/exams';
+import { exams } from '@/data/exams';
 
 interface QuizState {
   stream: string;

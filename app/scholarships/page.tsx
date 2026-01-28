@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { scholarships } from '../../data/scholarships';
+import { scholarships } from '@/data/scholarships';
 import { Search, Award, Calendar, CheckCircle2, ChevronRight, Filter, IndianRupee } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';

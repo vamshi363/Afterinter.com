@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { exams } from '../../../data/exams';
+import { exams } from '@/data/exams';
 import { 
   ArrowLeft, ExternalLink, Calendar, CheckCircle2, 
   Clock, Heart, Share2, Users, Globe, FileText, Zap,

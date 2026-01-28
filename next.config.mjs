@@ -4,26 +4,19 @@ const nextConfig = {
   swcMinify: true,
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "logo.clearbit.com",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.jsdelivr.net",
-      }
+      { protocol: "https", hostname: "logo.clearbit.com" },
+      { protocol: "https", hostname: "cdn.jsdelivr.net" }
     ],
-    unoptimized: true, 
+    unoptimized: true
   },
   eslint: {
-    // Allows build to succeed even if there are minor linting warnings
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   typescript: {
-    // Allows build to succeed even if there are minor type errors
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false
   },
-  trailingSlash: false,
+  // Ensure we are using the App Router primarily
+  distDir: '.next'
 };
 
 export default nextConfig;
